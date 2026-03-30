@@ -633,7 +633,7 @@ function empHTML(emp){
       <button class="btn btn-ghost btn-sm" onclick="addTrip('${emp.id}')">＋ Add Route</button>
       <button class="btn btn-pur btn-sm" onclick="calcAll('${emp.id}')">⚡ Calculate All</button>
       <button class="btn btn-teal btn-sm" onclick="snapEmp('${emp.id}')">💾 Save Snapshot</button>
-      <button class="btn btn-del btn-sm" style="margin-left:auto" onclick="confirmDelEmp('${emp.id}')">✕ Remove</button>
+      <button class="btn btn-del btn-sm" style="margin-left:auto" onclick="toggleEmp('${emp.id}')">✕ Close</button>
     </div>
   </div>`;
 }
@@ -1114,17 +1114,17 @@ function _doFacTemplate(){
 //  DISTANCE API
 // ══════════════════════════════════════════════════════
 function cleanAddr(addr){
-  // Strip trailing ",US" or ", US" and clean up extra commas/spaces
-  // ORS geocoder works better without the country suffix
-  return addr.replace(/,?\s*US\s*$/i,'').replace(/,\s*,/g,',').trim();
+  return addr.replace(/,?\s*US\s*$/i,'').replace(/,\s*,/g,',').replace(/\s+/g,' ').trim();
 }
 async function geo(addr){
   const clean=cleanAddr(addr);
-  const r=await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${encodeURIComponent(apiKey)}&text=${encodeURIComponent(clean)}&size=1`);
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Geocode error ${r.status}`);}
+  // Use Nominatim (OpenStreetMap) for geocoding - free, no key, works from any https page
+  const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(clean)}&format=json&limit=1&countrycodes=us`;
+  const r=await fetch(url,{headers:{'Accept-Language':'en-US','User-Agent':'EventusFuelCard/1.0'}});
+  if(!r.ok) throw new Error(`Geocode error ${r.status}`);
   const d=await r.json();
-  if(!d.features?.length)throw new Error(`Address not found: "${clean.slice(0,50)}"`);
-  return d.features[0].geometry.coordinates;
+  if(!d.length) throw new Error(`Address not found: "${clean.slice(0,50)}"`);
+  return [parseFloat(d[0].lon), parseFloat(d[0].lat)];
 }
 async function dist(o,d){
   const[c1,c2]=await Promise.all([geo(o),geo(d)]);
