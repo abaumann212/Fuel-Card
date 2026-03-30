@@ -1162,17 +1162,30 @@ async function geo(addr){
   return [parseFloat(best.lon), parseFloat(best.lat)];
 }
 function haversineMiles(c1,c2){
-  // Straight-line distance in miles between two [lon,lat] points
-  const R=3958.8, toRad=x=>x*Math.PI/180;
-  const dLat=toRad(c2[1]-c1[1]), dLon=toRad(c2[0]-c1[0]);
+  const R=3958.8,toRad=x=>x*Math.PI/180;
+  const dLat=toRad(c2[1]-c1[1]),dLon=toRad(c2[0]-c1[0]);
   const a=Math.sin(dLat/2)**2+Math.cos(toRad(c1[1]))*Math.cos(toRad(c2[1]))*Math.sin(dLon/2)**2;
-  const straight=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-  // Multiply by 1.35 to approximate actual driving distance from straight-line
-  return Math.round(straight*1.35*10)/10;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 async function dist(o,d){
   const[c1,c2]=await Promise.all([geo(o),geo(d)]);
-  return haversineMiles(c1,c2);
+  // Try Valhalla routing (CORS-enabled, free, no key needed)
+  try{
+    const body={costing:"auto",locations:[{lon:c1[0],lat:c1[1]},{lon:c2[0],lat:c2[1]}]};
+    const r=await fetch('https://valhalla1.openstreetmap.de/route',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    if(r.ok){
+      const d2=await r.json();
+      if(d2.trip?.summary?.length){
+        return Math.round(d2.trip.summary.length*0.621371*10)/10; // km to miles
+      }
+    }
+  }catch(e){console.warn('Valhalla failed, using estimate:',e);}
+  // Fallback: straight-line × 1.8
+  const straight=haversineMiles(c1,c2);
+  return Math.round(straight*1.8*10)/10;
 }
 async function getDist(o,d){
   try{return await dist(o,d);}catch(e){toast('❌ '+e.message,'err');console.error('getDist failed:',o,'->',d,e);return null;}
