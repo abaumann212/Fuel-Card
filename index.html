@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Fuel Card Calculator | Eventus WholeHealth</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Raleway:wght@400;600;700;800&display=swap');
+:root{
+  --pur:#6b2d8b;--pur-l:#8a3aad;--pur-d:#4a1e62;--pur-pale:#f5eefa;--pur-mid:#e3c8f5;
+  --navy:#1a2340;--navy-l:#243058;
+  --teal:#2a9d8f;--teal-l:#e6f5f4;
+  --bg:#f4f5f9;--surf:#fff;--surf2:#f0f2f8;
+  --bdr:#dde0ea;--bdr2:#c8ccd8;
+  --txt:#1a1a2e;--txt2:#3d3d5c;--muted:#6b7090;--muted2:#9ba0b8;
+  --grn:#2a9d8f;--grn-l:#e6f5f4;
+  --red:#c0392b;--red-l:#fdf0ef;
+  --ora:#e67e22;--ora-l:#fff3e0;
+  --sans:'Open Sans',sans-serif;--disp:'Raleway',sans-serif;--mono:'Courier New',monospace;
+  --r:8px;--sh:0 1px 4px rgba(107,45,139,.08),0 1px 2px rgba(0,0,0,.04);--sh-md:0 4px 16px rgba(107,45,139,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:14px;min-height:100vh;}
+
+/* HEADER */
+header{background:var(--navy);padding:0 24px;display:flex;align-items:center;gap:14px;height:58px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.25);}
+.logo-area{display:flex;align-items:center;gap:10px;}
+.logo-div{width:1px;height:26px;background:rgba(255,255,255,.22);}
+.logo-sub{color:rgba(255,255,255,.65);font-size:11px;font-weight:600;letter-spacing:.3px;}
+.hdr-r{margin-left:auto;display:flex;gap:7px;align-items:center;}
+.hbtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:6px;padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;}
+.hbtn:hover{background:rgba(255,255,255,.22);}
+.hbtn.pur{background:var(--pur);border-color:var(--pur);}
+.hbtn.pur:hover{background:var(--pur-l);}
+
+/* TABS */
+.tab-bar{background:var(--surf);border-bottom:2px solid var(--bdr);padding:0 24px;display:flex;position:sticky;top:58px;z-index:100;box-shadow:var(--sh);overflow-x:auto;}
+.tb{background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--muted);padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--disp);letter-spacing:.2px;transition:all .15s;white-space:nowrap;}
+.tb:hover{color:var(--pur);}
+.tb.active{color:var(--pur);border-bottom-color:var(--pur);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.wrap{max-width:1140px;margin:0 auto;padding:20px;}
+
+/* CARDS */
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;margin-bottom:14px;box-shadow:var(--sh);}
+.ctitle{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--pur);margin-bottom:12px;font-family:var(--disp);}
+
+/* SUMMARY BAR */
+.sum-bar{background:var(--surf);border:1px solid var(--bdr);border-top:3px solid var(--pur);border-radius:var(--r);padding:14px 20px;margin-bottom:16px;display:flex;gap:24px;flex-wrap:wrap;align-items:center;box-shadow:var(--sh);}
+.stat .val{font-size:22px;font-weight:700;color:var(--pur);font-family:var(--disp);}
+.stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-top:1px;font-weight:600;}
+
+/* SECTION HEADER */
+.shdr{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.shdr h2{font-size:15px;font-weight:700;color:var(--navy);font-family:var(--disp);}
+.badge{background:var(--pur);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+
+/* ADD EMPLOYEE BAR */
+.add-bar{background:var(--pur-pale);border:2px dashed var(--pur-mid);border-radius:var(--r);padding:11px 16px;display:flex;align-items:center;gap:11px;margin-bottom:12px;cursor:pointer;transition:all .15s;}
+.add-bar:hover{background:var(--pur-mid);border-color:var(--pur);}
+.add-icon{width:30px;height:30px;background:var(--pur);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:700;flex-shrink:0;}
+.add-text{font-weight:700;color:var(--pur);font-family:var(--disp);font-size:13px;}
+.add-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+
+/* EMPLOYEE CARD */
+.emp-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:9px;box-shadow:var(--sh);overflow:hidden;transition:box-shadow .15s;}
+.emp-card:hover{box-shadow:var(--sh-md);}
+.emp-hdr{padding:13px 16px;display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;border-left:4px solid transparent;transition:background .1s;}
+.emp-hdr:hover{background:var(--pur-pale);border-left-color:var(--pur-l);}
+.emp-hdr.open{background:var(--pur-pale);border-left-color:var(--pur);border-bottom:1px solid var(--pur-mid);}
+.emp-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pur),var(--pur-l));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--disp);}
+.emp-name{font-weight:700;font-size:14px;color:var(--navy);font-family:var(--disp);}
+.emp-addr{font-size:11px;color:var(--muted);margin-top:1px;}
+.emp-meta{font-size:11px;color:var(--muted2);margin-top:1px;}
+.emp-sum{margin-left:auto;text-align:right;flex-shrink:0;}
+.emp-cost{font-size:16px;font-weight:700;color:var(--teal);font-family:var(--disp);}
+.emp-mi{font-size:11px;color:var(--muted);}
+.chev{color:var(--pur);font-size:11px;transition:transform .2s;margin-left:7px;}
+.chev.open{transform:rotate(180deg);}
+.emp-body{display:none;padding:16px;background:#fafbff;}
+.emp-body.open{display:block;}
+
+/* FIELDS */
+.frow{display:flex;gap:9px;margin-bottom:11px;flex-wrap:wrap;}
+.fg{display:flex;flex-direction:column;flex:1;min-width:155px;}
+.fg label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--pur);margin-bottom:4px;font-family:var(--disp);}
+.fg input,.fg select{border:1px solid var(--bdr2);border-radius:6px;padding:8px 10px;font-size:13px;background:var(--surf);color:var(--txt);outline:none;font-family:var(--sans);}
+.fg input:focus,.fg select:focus{border-color:var(--pur);box-shadow:0 0 0 3px rgba(107,45,139,.1);}
+
+/* AUTOCOMPLETE */
+.ac-wrap{position:relative;}
+.ac-list{position:absolute;top:100%;left:0;right:0;background:var(--surf);border:1px solid var(--pur);border-top:none;border-radius:0 0 7px 7px;max-height:200px;overflow-y:auto;z-index:500;box-shadow:var(--sh-md);display:none;}
+.ac-list.show{display:block;}
+.ac-item{padding:7px 11px;cursor:pointer;border-bottom:1px solid var(--bdr);font-size:13px;}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover,.ac-item.sel{background:var(--pur-pale);color:var(--pur);}
+.ac-item small{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* TRIPS */
+.trips-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--pur);margin-bottom:9px;display:flex;align-items:center;gap:8px;font-family:var(--disp);}
+.trip-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh);}
+.trip-chdr{background:var(--navy);padding:7px 13px;display:flex;align-items:center;gap:8px;}
+.trip-num{background:var(--pur);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;font-family:var(--disp);}
+.trip-ctitle{color:rgba(255,255,255,.8);font-size:12px;font-weight:600;}
+.trip-stops{padding:13px 14px;border-bottom:1px solid var(--bdr);}
+.stops-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;font-family:var(--disp);}
+.stop-row{display:flex;gap:7px;align-items:flex-start;margin-bottom:7px;}
+.stop-n{width:22px;height:22px;border-radius:50%;background:var(--pur);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:26px;font-family:var(--disp);}
+.stop-fields{flex:1;display:flex;gap:7px;flex-wrap:wrap;}
+.trip-metrics{padding:10px 13px;display:flex;gap:0;border-bottom:1px solid var(--bdr);overflow-x:auto;}
+.metric{padding:7px 10px;border-right:1px solid var(--bdr);flex-shrink:0;min-width:85px;}
+.metric:last-child{border-right:none;}
+.m-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px;font-family:var(--disp);}
+.metric input{border:1px solid var(--bdr2);border-radius:5px;padding:5px 7px;font-size:12px;background:var(--surf);color:var(--txt);outline:none;width:100%;font-family:var(--mono);}
+.metric input:focus{border-color:var(--pur);}
+.m-val{font-size:13px;font-weight:700;color:var(--pur);font-family:var(--mono);}
+.m-cost{font-size:14px;font-weight:700;color:var(--teal);font-family:var(--mono);}
+.trip-foot{padding:9px 14px;background:var(--teal-l);display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid #c0e8e4;}
+.tf-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600;}
+.tf-val{font-size:12px;font-weight:700;color:var(--teal);font-family:var(--mono);margin-left:4px;}
+.tf-main{margin-left:auto;font-size:15px;font-weight:700;color:var(--teal);font-family:var(--disp);}
+.trip-act{padding:9px 13px;display:flex;gap:8px;background:var(--surf2);flex-wrap:wrap;align-items:center;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);border:none;transition:all .15s;white-space:nowrap;}
+.btn-pur{background:var(--pur);color:#fff;} .btn-pur:hover{background:var(--pur-l);} .btn-pur:disabled{background:var(--muted2);cursor:not-allowed;} .btn-pur.loading{background:var(--ora);}
+.btn-teal{background:var(--teal);color:#fff;} .btn-teal:hover{background:#22897c;}
+.btn-navy{background:var(--navy);color:#fff;} .btn-navy:hover{background:var(--navy-l);}
+.btn-out{background:var(--surf);border:1px solid var(--bdr2);color:var(--txt2);} .btn-out:hover{border-color:var(--pur);color:var(--pur);background:var(--pur-pale);}
+.btn-ghost{background:none;border:1px dashed var(--pur-mid);color:var(--pur);} .btn-ghost:hover{background:var(--pur-pale);border-color:var(--pur);}
+.btn-del{background:none;border:1px solid var(--bdr2);color:var(--muted);} .btn-del:hover{border-color:var(--red);color:var(--red);background:var(--red-l);}
+.btn-warn{background:none;border:1px solid var(--bdr2);color:var(--muted);} .btn-warn:hover{border-color:var(--red);color:var(--red);background:var(--red-l);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.emp-bottom{display:flex;gap:8px;margin-top:13px;padding-top:13px;border-top:1px solid var(--pur-mid);flex-wrap:wrap;align-items:center;}
+
+/* DATA TABLES (Employees/Facilities tabs) */
+.dt-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.dt-search{border:1px solid var(--bdr2);border-radius:6px;padding:8px 11px;font-size:13px;outline:none;background:var(--surf);color:var(--txt);font-family:var(--sans);flex:1;min-width:200px;max-width:320px;}
+.dt-search:focus{border-color:var(--pur);}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{background:var(--navy);color:rgba(255,255,255,.88);padding:9px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;font-family:var(--disp);white-space:nowrap;position:sticky;top:0;}
+.data-table td{padding:8px 12px;border-bottom:1px solid var(--bdr);color:var(--txt2);vertical-align:middle;}
+.data-table tr:hover td{background:var(--pur-pale);}
+.data-table tr:last-child td{border-bottom:none;}
+.dt-wrap{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;overflow-x:auto;max-height:500px;overflow-y:auto;box-shadow:var(--sh);}
+.dt-editable{border:none;background:transparent;color:var(--txt);font-size:13px;font-family:var(--sans);width:100%;outline:none;padding:2px 4px;border-radius:4px;}
+.dt-editable:focus{background:var(--pur-pale);border-bottom:2px solid var(--pur);}
+.dt-pager{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;}
+.dt-pager span{font-size:12px;color:var(--muted);}
+.pg-btn{background:var(--surf);border:1px solid var(--bdr2);border-radius:5px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:var(--sans);color:var(--txt2);}
+.pg-btn:hover{border-color:var(--pur);color:var(--pur);}
+.pg-btn.active{background:var(--pur);border-color:var(--pur);color:#fff;}
+.pg-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* IMPORT */
+.imp-zone{border:2px dashed var(--pur-mid);border-radius:var(--r);padding:28px 20px;text-align:center;background:var(--pur-pale);cursor:pointer;transition:all .15s;}
+.imp-zone:hover,.imp-zone.drag{border-color:var(--pur);background:var(--pur-mid);}
+.imp-zone-icon{font-size:32px;margin-bottom:8px;}
+.imp-zone-title{font-size:14px;font-weight:700;color:var(--pur);font-family:var(--disp);}
+.imp-zone-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+.col-chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+.chip{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:600;}
+.chip-req{background:var(--pur-pale);border:1px solid var(--pur);color:var(--pur);}
+.chip-opt{background:var(--surf2);border:1px solid var(--bdr2);color:var(--muted);}
+.imp-table{width:100%;border-collapse:collapse;font-size:12px;}
+.imp-table th{background:var(--navy);color:rgba(255,255,255,.88);padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;font-family:var(--disp);white-space:nowrap;position:sticky;top:0;}
+.imp-table td{padding:7px 12px;border-bottom:1px solid var(--bdr);color:var(--txt2);}
+.imp-table tr:hover td{background:var(--pur-pale);}
+.imp-row-new td:first-child{border-left:3px solid var(--teal);}
+.imp-row-dup td:first-child{border-left:3px solid var(--ora);}
+.imp-row-skip td{color:var(--muted2);}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;}
+.tag-new{background:var(--teal-l);color:var(--teal);}
+.tag-upd{background:var(--ora-l);color:var(--ora);}
+.tag-skip{background:var(--surf2);color:var(--muted);}
+.tag-err{background:var(--red-l);color:var(--red);}
+.tbl-wrap{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;overflow-x:auto;max-height:340px;overflow-y:auto;}
+.radio-row{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;}
+.radio-row label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--txt2);cursor:pointer;}
+
+/* HISTORY */
+.snap-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:9px;box-shadow:var(--sh);overflow:hidden;}
+.snap-hdr{padding:12px 16px;display:flex;align-items:center;gap:11px;cursor:pointer;border-left:4px solid var(--pur);}
+.snap-hdr:hover{background:var(--pur-pale);}
+.snap-body{display:none;border-top:1px solid var(--bdr);}
+.snap-body.open{display:block;}
+.snap-table{width:100%;border-collapse:collapse;font-size:12px;}
+.snap-table th{background:var(--navy);color:rgba(255,255,255,.85);padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;font-family:var(--disp);}
+.snap-table td{padding:8px 12px;border-bottom:1px solid var(--bdr);color:var(--txt2);}
+.snap-table tr:hover td{background:var(--pur-pale);}
+.snap-table tr:last-child td{border-bottom:none;}
+.save-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.save-row input{border:1px solid var(--bdr2);border-radius:6px;padding:8px 11px;font-family:var(--sans);font-size:13px;flex:1;min-width:200px;outline:none;}
+.save-row input:focus{border-color:var(--pur);}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:11px 16px;font-size:13px;z-index:9999;display:none;max-width:320px;box-shadow:var(--sh-md);}
+.toast.show{display:block;}
+.toast.ok{border-left:4px solid var(--teal);}
+.toast.err{border-left:4px solid var(--red);}
+.toast.warn{border-left:4px solid var(--ora);}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(26,35,64,.45);z-index:1000;align-items:center;justify-content:center;}
+.mo.show{display:flex;}
+.mo-box{background:var(--surf);border-radius:10px;padding:26px;max-width:440px;width:90%;box-shadow:var(--sh-md);border-top:4px solid var(--pur);}
+.mo-box h3{font-size:16px;font-weight:700;margin-bottom:10px;font-family:var(--disp);color:var(--navy);}
+.mo-box p{font-size:13px;color:var(--txt2);margin-bottom:18px;line-height:1.6;}
+.mo-act{display:flex;gap:8px;justify-content:flex-end;}
+
+/* Settings */
+.api-inp{border:1px solid var(--bdr2);border-radius:6px;padding:9px 11px;font-family:var(--mono);font-size:12px;flex:1;min-width:260px;outline:none;background:var(--surf);color:var(--txt);}
+.api-inp:focus{border-color:var(--pur);}
+.api-ok{background:var(--teal-l);color:var(--teal);border-radius:6px;padding:5px 11px;font-size:12px;font-weight:700;}
+.api-no{background:var(--red-l);color:var(--red);border-radius:6px;padding:5px 11px;font-size:12px;font-weight:700;}
+
+@media(max-width:700px){
+  .trip-metrics{flex-direction:column;}
+  .metric{border-right:none;border-bottom:1px solid var(--bdr);}
+  .tab-bar{gap:0;}
+  .tb{padding:10px 11px;font-size:12px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <svg height="34" viewBox="0 0 200 36" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="17" cy="18" r="13" fill="#6b2d8b"/>
+      <circle cx="17" cy="18" r="8" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <circle cx="17" cy="18" r="3" fill="#fff"/>
+      <text x="36" y="14" font-family="Raleway,sans-serif" font-weight="800" font-size="13" fill="#ffffff" letter-spacing="1">eventus</text>
+      <text x="36" y="28" font-family="Open Sans,sans-serif" font-weight="400" font-size="9.5" fill="rgba(255,255,255,0.7)" letter-spacing=".4">WholeHealth</text>
+    </svg>
+    <div class="logo-div"></div>
+    <span class="logo-sub">Fuel Card Calculator</span>
+  </div>
+  <div class="hdr-r">
+    <button class="hbtn" onclick="saveAllSnaps()">💾 Save Snapshots</button>
+    <button class="hbtn pur" onclick="exportCSV()">⬇ Export CSV</button>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tb active" onclick="T('calc')">📊 Calculator</button>
+  <button class="tb" onclick="T('emps')">👤 Employees</button>
+  <button class="tb" onclick="T('facs')">🏥 Facilities</button>
+  <button class="tb" onclick="T('import')">📥 Import</button>
+  <button class="tb" onclick="T('history')">🕓 History</button>
+  <button class="tb" onclick="T('settings')">⚙ Settings</button>
+</div>
+
+<!-- ══ CALCULATOR ══ -->
+<div class="tab-panel active" id="tab-calc">
+<div class="wrap">
+  <div class="sum-bar">
+    <div class="stat"><div class="val" id="sEmp">0</div><div class="lbl">Employees</div></div>
+    <div class="stat"><div class="val" id="sRoutes">0</div><div class="lbl">Routes</div></div>
+    <div class="stat"><div class="val" id="sMiles">0</div><div class="lbl">Qual. Miles/Mo</div></div>
+    <div class="stat"><div class="val" id="sCost">$0</div><div class="lbl">Total $/Month</div></div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <input type="text" id="calcSearch" placeholder="🔍 Search employees…" class="dt-search" style="max-width:220px" oninput="renderCalc(this.value)">
+    </div>
+  </div>
+  <div class="shdr"><h2>Employees</h2><span class="badge" id="calcBadge">0</span></div>
+  <div class="add-bar" onclick="addEmployee()">
+    <div class="add-icon">＋</div>
+    <div><div class="add-text">Add New Employee</div><div class="add-sub">Click to create a new fuel card employee record</div></div>
+  </div>
+  <div id="calcList"></div>
+</div>
+</div>
+
+<!-- ══ EMPLOYEES TAB ══ -->
+<div class="tab-panel" id="tab-emps">
+<div class="wrap">
+  <div class="card">
+    <div class="ctitle">👤 All Employees</div>
+    <div class="dt-toolbar">
+      <input type="text" class="dt-search" id="empTabSearch" placeholder="🔍 Search name or address…" oninput="renderEmpTab()">
+      <button class="btn btn-pur btn-sm" onclick="addEmployee();T('calc')">＋ Add Employee</button>
+      <button class="btn btn-out btn-sm" onclick="exportEmpCSV()">⬇ Export</button>
+      <span id="empTabCount" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
+    </div>
+    <div class="dt-wrap">
+      <table class="data-table" id="empTable">
+        <thead><tr>
+          <th>#</th>
+          <th>Employee Name</th>
+          <th>Home Address</th>
+          <th>Routes</th>
+          <th>$/Month</th>
+          <th style="width:90px">Actions</th>
+        </tr></thead>
+        <tbody id="empTbody"></tbody>
+      </table>
+    </div>
+    <div class="dt-pager" id="empPager"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══ FACILITIES TAB ══ -->
+<div class="tab-panel" id="tab-facs">
+<div class="wrap">
+  <div class="card">
+    <div class="ctitle">🏥 All Facilities</div>
+    <div class="dt-toolbar">
+      <input type="text" class="dt-search" id="facTabSearch" placeholder="🔍 Search name or address…" oninput="renderFacTab()">
+      <button class="btn btn-pur btn-sm" onclick="addFacility()">＋ Add Facility</button>
+      <button class="btn btn-out btn-sm" onclick="exportFacCSV()">⬇ Export</button>
+      <span id="facTabCount" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
+    </div>
+    <div class="dt-wrap">
+      <table class="data-table" id="facTable">
+        <thead><tr>
+          <th>#</th>
+          <th>Facility Name</th>
+          <th>Full Address</th>
+          <th style="width:90px">Actions</th>
+        </tr></thead>
+        <tbody id="facTbody"></tbody>
+      </table>
+    </div>
+    <div class="dt-pager" id="facPager"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══ IMPORT ══ -->
+<div class="tab-panel" id="tab-import">
+<div class="wrap">
+
+  <!-- EMPLOYEE IMPORT -->
+  <div class="card">
+    <div class="ctitle">👤 Import Employees — Weekly Update</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7">
+      Upload your weekly employee export. Matches on <strong>Employee Name</strong>. New employees are added; existing ones can be updated or skipped.
+      Supports the <strong>Eventus template</strong> (Employee Name, Address, State/Province, Zip/PostalCode, City, FULLADDRESS) or any CSV with Name + Address columns.
+    </p>
+    <div class="col-chips">
+      <span class="chip chip-req">Employee Name ★</span>
+      <span class="chip chip-req">Address / FULLADDRESS ★</span>
+      <span class="chip chip-opt">State/Province</span>
+      <span class="chip chip-opt">City</span>
+      <span class="chip chip-opt">Zip/PostalCode</span>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+      <div class="imp-zone" id="empDropZone" onclick="document.getElementById('empFile').click()" ondragover="dzOver(event,'empDropZone')" ondragleave="dzOut('empDropZone')" ondrop="dzDrop(event,'emp')">
+        <div class="imp-zone-icon">📂</div>
+        <div class="imp-zone-title">Choose or Drop Employee File</div>
+        <div class="imp-zone-sub">CSV or Excel (.xlsx) — matches Eventus weekly export template</div>
+      </div>
+      <input type="file" id="empFile" accept=".csv,.xlsx,.txt" style="display:none" onchange="loadEmpPreview(event)">
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+      <button class="btn btn-out btn-sm" onclick="downloadEmpTemplate()">⬇ Download Template (.xlsx)</button>
+      <span id="empFileName" style="font-size:12px;color:var(--muted);font-style:italic"></span>
+    </div>
+    <div id="empImportPreview" style="display:none">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+        <strong style="font-size:13px;font-family:var(--disp);color:var(--navy)">Preview</strong>
+        <span id="empPrevCount" class="badge">0</span>
+        <div class="radio-row" style="margin:0">
+          <label><input type="radio" name="empDup" value="skip" checked> Skip existing</label>
+          <label><input type="radio" name="empDup" value="update"> Update existing</label>
+          <label><input type="radio" name="empDup" value="add"> Always add new</label>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table class="imp-table"><thead id="empPrevHead"></thead><tbody id="empPrevBody"></tbody></table></div>
+      <div style="display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-pur" onclick="commitEmpImport()">✓ Import Employees</button>
+        <button class="btn btn-out" onclick="clearEmpImport()">✕ Cancel</button>
+        <span id="empImpMsg" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FACILITY IMPORT -->
+  <div class="card">
+    <div class="ctitle">🏥 Import Facilities — Weekly Update</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7">
+      Upload your weekly facility export to keep the autocomplete list current. Matches on <strong>Facility Name</strong>.
+      Supports the <strong>Eventus template</strong> (Facility Name, Address, City, State/Province, Zip/PostalCode, FULLADDRESS) or any CSV.
+    </p>
+    <div class="col-chips">
+      <span class="chip chip-req">Facility Name ★</span>
+      <span class="chip chip-req">Address / FULLADDRESS ★</span>
+      <span class="chip chip-opt">City</span>
+      <span class="chip chip-opt">State/Province</span>
+      <span class="chip chip-opt">Zip/PostalCode</span>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+      <div class="imp-zone" id="facDropZone" onclick="document.getElementById('facFile').click()" ondragover="dzOver(event,'facDropZone')" ondragleave="dzOut('facDropZone')" ondrop="dzDrop(event,'fac')">
+        <div class="imp-zone-icon">🏥</div>
+        <div class="imp-zone-title">Choose or Drop Facility File</div>
+        <div class="imp-zone-sub">CSV or Excel (.xlsx) — matches Eventus weekly export template</div>
+      </div>
+      <input type="file" id="facFile" accept=".csv,.xlsx,.txt" style="display:none" onchange="loadFacPreview(event)">
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+      <button class="btn btn-out btn-sm" onclick="downloadFacTemplate()">⬇ Download Template (.xlsx)</button>
+      <span id="facFileName" style="font-size:12px;color:var(--muted);font-style:italic"></span>
+    </div>
+    <div class="radio-row" style="margin-bottom:10px">
+      <label><input type="radio" name="facMode" value="merge" checked> Merge with existing</label>
+      <label><input type="radio" name="facMode" value="replace"> Replace all custom facilities</label>
+    </div>
+    <div id="facImportPreview" style="display:none">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+        <strong style="font-size:13px;font-family:var(--disp);color:var(--navy)">Preview</strong>
+        <span id="facPrevCount" class="badge">0</span>
+      </div>
+      <div class="tbl-wrap"><table class="imp-table"><thead id="facPrevHead"></thead><tbody id="facPrevBody"></tbody></table></div>
+      <div style="display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-pur" onclick="commitFacImport()">✓ Import Facilities</button>
+        <button class="btn btn-out" onclick="clearFacImport()">✕ Cancel</button>
+        <span id="facImpMsg" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══ HISTORY ══ -->
+<div class="tab-panel" id="tab-history">
+<div class="wrap">
+  <div class="card">
+    <div class="ctitle">💾 Save Snapshot</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">Preserve the current state. Each employee gets individual history so you can review changes over time.</p>
+    <div class="save-row">
+      <input type="text" id="snapLabel" placeholder="Label (e.g. March 2026 Review, Q1 Audit…)">
+      <button class="btn btn-pur" onclick="saveAllSnaps()">Save for All Employees</button>
+    </div>
+  </div>
+  <div class="shdr" style="margin-top:6px"><h2>Employee History</h2><span class="badge" id="histBadge">0</span></div>
+  <div id="histList"></div>
+</div>
+</div>
+
+<!-- ══ SETTINGS ══ -->
+<div class="tab-panel" id="tab-settings">
+<div class="wrap">
+  <div class="card">
+    <div class="ctitle">🔑 OpenRouteService API Key</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <input type="text" class="api-inp" id="apiKey" oninput="saveApiKey()" placeholder="Your ORS API key…">
+      <span id="apiStatus" class="api-ok">✓ Key loaded</span>
+    </div>
+    <p style="margin-top:10px;font-size:12px;color:var(--muted)">Pre-configured and ready. If distances stop working, get a free key at <a href="https://openrouteservice.org/dev/#/signup" target="_blank" style="color:var(--pur);font-weight:600">openrouteservice.org</a>.</p>
+  </div>
+  <div class="card">
+    <div class="ctitle">🗄 Backup &amp; Restore</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-out" onclick="exportJSON()">⬇ Export Full Backup (.json)</button>
+      <button class="btn btn-out" onclick="document.getElementById('jsonIn').click()">⬆ Import Backup</button>
+      <input type="file" id="jsonIn" accept=".json" style="display:none" onchange="importJSON(event)">
+      <button class="btn btn-warn" onclick="confirmClearAll()">⚠ Clear All Data</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px">Data auto-saves in browser. Export JSON for cross-device backup.</p>
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="modal">
+  <div class="mo-box">
+    <h3 id="moTitle">Confirm</h3>
+    <p id="moMsg"></p>
+    <div class="mo-act">
+      <button class="btn btn-out" onclick="closeMo()">Cancel</button>
+      <button class="btn btn-warn" id="moOk">Confirm</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  SEED + STATE
+// ══════════════════════════════════════════════════════
+const DEFAULT_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjJlZWJmMTcxZTE4YTRjNGRhODU2OGJlZDE3NjRiN2VlIiwiaCI6Im11cm11cjY0In0=';
+const SEED = {"employees":[{"id":"xus82kw7","name":"Ashley Thrush","address":"903 County Road 60, IN, 46738,US","open":false,"trips":[{"id":"j934e2cb","stops":[{"fac":"LLV Kendallville","addr":"351 N Allen Chapel Road, Kendallville, IN, 46755, US"}],"legs":["12.8","",""],"roundTrip":"25.6","qualifying":"0","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"hr1bisp4","stops":[{"fac":"Auburn Village","addr":"1751 Wesley Road, AUBURN, Indiana, 46707, US"}],"legs":["9.8","",""],"roundTrip":"19.6","qualifying":"0","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"tihjcavr","stops":[{"fac":"LLV - South Anthony ALF","addr":"6723 S ANTHONY BLVD, Fort Wayne, Indiana, 46816, US"}],"legs":["36.5","",""],"roundTrip":"73.0","qualifying":"41.0","freq":"2","rate":"0.2","totalMiles":"82.0","totalCost":"16.4"},{"id":"jf3oyo60","stops":[{"fac":"LLV - South Anthony ALF","addr":"6723 S ANTHONY BLVD, Fort Wayne, Indiana, 46816, US"}],"legs":["36.5","",""],"roundTrip":"73.0","qualifying":"41.0","freq":"20","rate":"0.2","totalMiles":"820.0","totalCost":"164.0"}]},{"id":"8wg09xhd","name":"Brandon Emry","address":"6295 Melan Cove, IN, 46835,US","open":false,"trips":[{"id":"gjpl18tg","stops":[{"fac":"LLV - South Anthony ALF","addr":"6723 S ANTHONY BLVD, Fort Wayne, Indiana, 46816, US"}],"legs":["16.9","",""],"roundTrip":"33.8","qualifying":"1.8","freq":"4","rate":"0.2","totalMiles":"7.2","totalCost":"1.44"},{"id":"rim6p0a7","stops":[{"fac":"The Waters of Wabash East (Miller's)","addr":"1900 N ALBER ST, WABASH, Indiana, 46992, US"},{"fac":"Autumn Ridge Rehabilitation Centre","addr":"600 WASHINGTON RD, WABASH, Indiana, 46992, US"}],"legs":["57.2","2.0","57.1"],"roundTrip":"116.3","qualifying":"84.3","freq":"3","rate":"0.2","totalMiles":"252.9","totalCost":"50.58"},{"id":"d8bv5ti3","stops":[{"fac":"Chateau Rehabilitation - (Sig-Ft Wayne)","addr":"6006 Brandy Chase Cove, Fort Wayne, Indiana, 46815, US"},{"fac":"Golden Years - Fort Wayne","addr":"8300 MAYSVILLE RD, Fort Wayne, Indiana, 46815, US"}],"legs":["3.7","1.9","3.0"],"roundTrip":"8.6","qualifying":"0","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"76fdzu34","stops":[{"fac":"Heritage Park SNF","addr":"2001 Hobson Road, Fort Wayne, Indiana, 46805, US"},{"fac":"Summit City","addr":"2940 N CLINTON ST, Fort Wayne, Indiana, 46805, US"}],"legs":["5.5","2.6","6.6"],"roundTrip":"14.7","qualifying":"0","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"zufpewnd","stops":[{"fac":"Heritage Park SNF","addr":"2001 Hobson Road, Fort Wayne, Indiana, 46805, US"}],"legs":["5.5","",""],"roundTrip":"11.0","qualifying":"0","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"ldafxeme","stops":[{"fac":"The Waters of Wabash East (Miller's)","addr":"1900 N ALBER ST, WABASH, Indiana, 46992, US"}],"legs":["57.2","",""],"roundTrip":"114.4","qualifying":"82.4","freq":"4","rate":"0.2","totalMiles":"329.6","totalCost":"65.92"},{"id":"9y3jfza9","stops":[{"fac":"LLV - South Anthony ALF","addr":"6723 S ANTHONY BLVD, Fort Wayne, Indiana, 46816, US"}],"legs":["16.9","",""],"roundTrip":"33.8","qualifying":"1.8","freq":"4","rate":"0.2","totalMiles":"7.2","totalCost":"1.44"}]},{"id":"l1v5h1vi","name":"Warren Hatt","address":"2506 Girvan Drive, NC, 27526,US","open":false,"trips":[{"id":"qakt2poi","stops":[{"fac":"Franklin Manor","addr":"100 Sunset Dr, Youngsville, North Carolina, 27596, US"}],"legs":["47.5","",""],"roundTrip":"95.0","qualifying":"63.0","freq":"2","rate":"0.2","totalMiles":"126.0","totalCost":"25.2"},{"id":"rejogva5","stops":[{"fac":"Morningside of Raleigh","addr":"801 DIXIE TRL, Raleigh, North Carolina, 27607, US"}],"legs":["19.4","",""],"roundTrip":"38.8","qualifying":"6.8","freq":"2","rate":"0.2","totalMiles":"13.6","totalCost":"2.72"},{"id":"8f5cnkx6","stops":[{"fac":"Morningside of Raleigh","addr":"801 DIXIE TRL, Raleigh, North Carolina, 27607, US"},{"fac":"Waltonwood Cary AL","addr":"750 SE CARY PKWY, Cary, North Carolina, 27511, US"}],"legs":["19.4","7.9","14.7"],"roundTrip":"42.0","qualifying":"10.0","freq":"2","rate":"0.2","totalMiles":"20.0","totalCost":"4.0"},{"id":"81q164ny","stops":[{"fac":"Spring Arbor of Apex","addr":"901 Spring Arbor Ct, Apex, North Carolina, 27502, US"},{"fac":"Spring Arbor of Cary MC","addr":"1705 Kildaire Farm Rd, Cary, North Carolina, 27511, US"}],"legs":["9.4","6.0","14.6"],"roundTrip":"30.0","qualifying":"0","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"e6lnltx4","stops":[{"fac":"Heartfields","addr":"1050 Crescent Green Dr, Cary, North Carolina, 27518, US"}],"legs":["11.9","",""],"roundTrip":"23.8","qualifying":"0","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"r9wdxcvz","stops":[{"fac":"Brookdale Cary","addr":"7870 Chapel Hill Rd, Cary, North Carolina, 27513, US"}],"legs":["20.6","",""],"roundTrip":"41.2","qualifying":"9.2","freq":"2","rate":"0.2","totalMiles":"18.4","totalCost":"3.68"},{"id":"xiwtyif5","stops":[{"fac":"PruittHealth - Carolina Point","addr":"5935 Mount Sinai Road, Durham, North Carolina, 27705, US"}],"legs":["36.9","",""],"roundTrip":"73.8","qualifying":"41.8","freq":"2","rate":"0.2","totalMiles":"83.6","totalCost":"16.72"},{"id":"l28cmfqe","stops":[{"fac":"Hillcrest Raleigh at Crabtree Valley","addr":"3830 Blue Ridge Roa, Raleigh, North Carolina, 27612, US"}],"legs":["22.3","",""],"roundTrip":"44.6","qualifying":"12.6","freq":"4","rate":"0.2","totalMiles":"50.4","totalCost":"10.08"}]},{"id":"i3dqk8nu","name":"Kim Groce Cunningham","address":"4016 Limestone Court, NC, 27012,US","open":false,"trips":[{"id":"dt0m4hik","stops":[{"fac":"King Health and Rehab","addr":"115 White Road, King, NC, 27021, US"}],"legs":["29.8","",""],"roundTrip":"59.6","qualifying":"27.6","freq":"12","rate":"0.2","totalMiles":"331.2","totalCost":"66.24"},{"id":"y5covm5b","stops":[{"fac":"Twelve Oaks","addr":"1297 Galax Trail, Mt Airy, North Carolina, 28211, US"}],"legs":["52.0","20.8","13.2"],"roundTrip":"104.0","qualifying":"72.0","freq":"8","rate":"0.2","totalMiles":"576.0","totalCost":"115.2"}]},{"id":"9fch1ol8","name":"Kershn Ferguson","address":"203 Faith Court, VA, 24540,US","open":false,"trips":[{"id":"pc4ww4sn","stops":[{"fac":"Mulberry Creek Assisted Living","addr":"300 Blue Ridge St, Martinsville, VA, 24112, US"}],"legs":["30.4","",""],"roundTrip":"60.8","qualifying":"28.8","freq":"12","rate":"0.2","totalMiles":"345.6","totalCost":"69.12"},{"id":"2a5rwav8","stops":[{"fac":"Stratford Health & Rehab","addr":"508 Rison Street, Danville, VA, 24541, US"},{"fac":"Chatham Health & Rehab of VA","addr":"100 Rorer Road, Chatham, VA, 24531, US"}],"legs":["8.5","20.8","13.2"],"roundTrip":"42.5","qualifying":"10.5","freq":"4","rate":"0.2","totalMiles":"42.0","totalCost":"8.4"},{"id":"xlngad9q","stops":[{"fac":"Chatham Health & Rehab of VA","addr":"100 Rorer Road, Chatham, VA, 24531, US"}],"legs":["13.3","",""],"roundTrip":"26.6","qualifying":"0","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"9u5q8u1u","stops":[{"fac":"Chatham Health & Rehab of VA","addr":"100 Rorer Road, Chatham, VA, 24531, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"","rate":"0.2","totalMiles":"","totalCost":""}]},{"id":"wlj9tm80","name":"Simone Williams","address":"781 Alexander Common Drive, NC, 28112,US","open":false,"trips":[{"id":"dtbdg50s","stops":[{"fac":"PruittHealth - Union Pointe","addr":"3510 West Hwy 74, Monroe, North Carolina, 28110, US"}],"legs":["5.7","",""],"roundTrip":"11.4","qualifying":"0","freq":"20","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"fqfe3ljd","name":"Bernice Ewing","address":"3302 Beatrice Drive, Fort Wayne,IN, 46806","open":false,"trips":[{"id":"ds6glt54","stops":[{"fac":"Betz Nursing Home","addr":"116 Betz Rd, Auburn, IN, 46706, US"},{"fac":"Bethlehem Woods Nursing & Rehab","addr":"4430 ELSDALE DRIVE, Fort Wayne, Indiana, 46835, US"}],"legs":["29.3","22.4","8.7"],"roundTrip":"60.4","qualifying":"28.4","freq":"8","rate":"0.2","totalMiles":"227.2","totalCost":"45.44"},{"id":"akclolhz","stops":[{"fac":"Heritage Park SNF","addr":"2001 Hobson Road, Fort Wayne, Indiana, 46805, US"},{"fac":"Glenbrook Rehab","addr":"3811 PARNELL AVE, Fort Wayne, Indiana, 46805, US"}],"legs":["5.5","2.9","8.2"],"roundTrip":"16.6","qualifying":"0","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"q66951i8","name":"Lacey Wills","address":"1001 Butternut Drive, IN, 47201,US","open":false,"trips":[{"id":"qjd7p2aw","stops":[{"fac":"Seymour Crossing","addr":"707 S Jackson Park Drive, Seymour, IN, 47274, US"},{"fac":"Westview","addr":"1510 CLINIC DRIVE, BEDFORD, Indiana, 47421, US"}],"legs":["22.4","38.5","52.2"],"roundTrip":"113.1","qualifying":"81.1","freq":"4","rate":"0.2","totalMiles":"324.4","totalCost":"64.88"},{"id":"l3m9hu9q","stops":[{"fac":"Seymour Crossing","addr":"707 S Jackson Park Drive, Seymour, IN, 47274, US"}],"legs":["22.4","",""],"roundTrip":"44.8","qualifying":"12.8","freq":"6","rate":"0.2","totalMiles":"76.8","totalCost":"15.36"},{"id":"c9zjt1hx","stops":[{"fac":"Westview","addr":"1510 CLINIC DRIVE, BEDFORD, Indiana, 47421, US"}],"legs":["56.9","",""],"roundTrip":"113.8","qualifying":"81.8","freq":"4","rate":"0.2","totalMiles":"327.2","totalCost":"65.44"}]},{"id":"vf9pl4mm","name":"Anthony Abdullah","address":"5112 Griffis Lake Drive, Hamilton,Ohio, 45011","open":false,"trips":[{"id":"nd8dn5ga","stops":[{"fac":"Fountain View","addr":"3500 Maple Ave, Terre Haute, IN, 47804, US"},{"fac":"Maderia Care Center","addr":"6922 Ohio Ave, Cincinnati, OH, 45336, US"}],"legs":["27.9","3.0","28.4"],"roundTrip":"59.3","qualifying":"27.3","freq":"2","rate":"0.2","totalMiles":"54.6","totalCost":"10.92"},{"id":"utwbd2wt","stops":[{"fac":"Fairfield Care Community","addr":"5970 Kenwood Rd, Madeira, OH, 45243, US"}],"legs":["11.8","",""],"roundTrip":"23.6","qualifying":"0","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"8jnbrvg2","stops":[{"fac":"Rosemount Care Center","addr":"20 Easter Drive, Portsmouth, OH, 45662, US"},{"fac":"Edgewood Manor of Lucasville I","addr":"10098 Big Bear Creek Road, Lucasville, Ohio, 45648, US"}],"legs":["120.9","10.6","109.2"],"roundTrip":"240.7","qualifying":"208.7","freq":"2","rate":"0.2","totalMiles":"417.4","totalCost":"83.48"}]},{"id":"jhyecnmh","name":"Stacey Price","address":"543 N State Street, OH, 43082,US","open":false,"trips":[{"id":"jtvkpgwd","stops":[{"fac":"Harrison Trail Health Campus","addr":"10460 Progress Way, Harrison, OH, 45030, US"}],"legs":["135.7","",""],"roundTrip":"271.4","qualifying":"239.4","freq":"3","rate":"0.2","totalMiles":"718.2","totalCost":"143.64"},{"id":"j55p705d","stops":[{"fac":"The Lodge Nursing and Rehab","addr":"9370 UNION CEMETERY ROAD, Loveland, Ohio, 45140, US"}],"legs":["106.0","",""],"roundTrip":"212.0","qualifying":"180.0","freq":"8","rate":"0.2","totalMiles":"1440.0","totalCost":"288.0"},{"id":"kj79u6vx","stops":[{"fac":"Glendale Place Nursing & Rehab","addr":"779 GLENDALE MILFORD ROAD, CINCINNATI, Ohio, 45215, US"}],"legs":["116.3","",""],"roundTrip":"232.6","qualifying":"200.6","freq":"4","rate":"0.2","totalMiles":"802.4","totalCost":"160.48"},{"id":"3opjmg6f","stops":[{"fac":"Sanctuary Pointe Nursing and Rehab","addr":"11501 HAMILTON AVENUE, CINCINNATI, Ohio, 45231, US"}],"legs":["119.8","",""],"roundTrip":"239.6","qualifying":"207.6","freq":"1","rate":"0.2","totalMiles":"207.6","totalCost":"41.52"}]},{"id":"uklagwdn","name":"Amanda Wilkins","address":"1084 Lennig Road, VA, 24577,US","open":false,"trips":[{"id":"08ijpxqe","stops":[{"fac":"Farmville Health & Rehab","addr":"1575 Scott Drive , Farmville, VA, 23901, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"366q9x4a","stops":[{"fac":"Liberty Ridge Health & Rehab","addr":"189 Monica Blvd, Lynchburg, VA, 24502, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"kgcf4ut2","stops":[{"fac":"The Elms of Lynchburg","addr":"2249 Murrell Rd, Lynchburg, VA, 24501, US"},{"fac":"Bentley Commons","addr":"1604 Graves Mill Road, Lynchburg, VA, 24502, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"c2in4umc","stops":[{"fac":"Clarksville Health & Rehab","addr":"184 Buffalo Road, Clarksville, VA, 23927, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"b2922qzn","stops":[{"fac":"Seven Hills Rehab & Nursing","addr":"2081 Langhorne Rd, Lynchburg, VA, 24501, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"z3h8cxqp","name":"Christina Haynes","address":"561 Jeanette Street, OH, 44212,US","open":false,"trips":[{"id":"0jy79dwb","stops":[{"fac":"Arbors at Stow","addr":"2910 L'Ermitage Place, Stow, OH, 44224, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"20","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"iq7lkgmt","stops":[{"fac":"Augusta Nursing & Rehab","addr":"83 Crossroads Lane, Fishersville, VA , 22939, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"","rate":"0.2","totalMiles":"","totalCost":""}]},{"id":"597c99or","name":"Joetta Togba","address":"1576 Ivy Meadow Lane, NC, 47597,US","open":false,"trips":[{"id":"pls8xd6h","stops":[{"fac":"Spring Arbor of Cary MC","addr":"1705 Kildaire Farm Rd, Cary, North Carolina, 27511, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"mbq59z1m","stops":[{"fac":"Brookdale North Raleigh","addr":"1200 Carlos Dr, Raleigh, North Carolina, 27609, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"x58nqtzl","stops":[{"fac":"Wake Assisted Living","addr":"2800 Kidd Road, Raleigh, NC, 27610, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"sbfqz4yg","stops":[{"fac":"Falls River Court","addr":"1130 Falls River Ave, Raleigh, North Carolina, 27614, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"yx12q8bf","stops":[{"fac":"Woodland Terrace AL","addr":"300 Kildaire Woods Dr, Cary, North Carolina, 27511, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"qbsuqfki","name":"Bernice Clark","address":"1133 O'Brien Street, IN, 46628,US","open":false,"trips":[{"id":"yiwrdipa","stops":[{"fac":"Majestic Care of South Bent","addr":"52654 N Ironwood Road, South Bend, IN, 46635, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"gtdztpp3","stops":[{"fac":"StoryPoint Granger","addr":"6330 N FIR RD, GRANGER, Indiana, 46530, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"virq5wze","stops":[{"fac":"Hellenic Senior Living - Elkhart","addr":"2528 BYPASS RD, ELKHART, Indiana, 46514, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"oawry9b9","stops":[{"fac":"Hamilton Grove","addr":"31869 Chicago Trail, New Carlisle, Indiana, 46552, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"0oxr945v","stops":[{"fac":"Majestic Care of Goshen","addr":"2400 College Ave, Goshen, IN, 46528, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"1lg07x6g","stops":[{"fac":"Woodland manor Elkhart","addr":"343 South Nappanee St, Elkhart, IN, 46514, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"z8cd172e","stops":[{"fac":"Woodland manor Elkhart","addr":"343 South Nappanee St, Elkhart, IN, 46514, US"},{"fac":"Vannoni Living","addr":"500 LINCOLNWAY E, MISHAWAKA, Indiana, 46544, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"yoajvntm","stops":[{"fac":"Elkhart Meadows","addr":"2600 MOREHOUSE AVE, ELKHART, Indiana, 46517, US"},{"fac":"Hellenic Senior Living - Elkhart","addr":"2528 BYPASS RD, ELKHART, Indiana, 46514, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"2ptdk58h","stops":[{"fac":"Bell Tower Health & Rehab","addr":"5805 N Fir Road, GRANGER, Indiana, 46530, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"9pwpg64v","stops":[{"fac":"Silver Birch of Mishawaka","addr":"3630 Hickory Rd, Mishawaka, Indiana, 46545, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"mxhzys3v","stops":[{"fac":"Hellenic Senior Living - Mishawaka","addr":"1540 S Logan Street, MISHAWAKA, Indiana, 46544, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"rcuo0pgd","name":"Jaleecia Morton","address":"2309 Darden Drive, SC, 29501,US","open":false,"trips":[{"id":"zs08x4bq","stops":[{"fac":"Bishopville Manor","addr":"2779 Highway 15 N, Bishopville, SC, 29010, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"iwevyhgc","stops":[{"fac":"Sumter East Health and Rehab","addr":"880 Carolina Ave, Sumter, South Carolina, 29150, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"ac7cs774","stops":[{"fac":"Cheraw Healthcare","addr":"400 Moffat Road, Cheraw, South Carolina, 29520, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"j5qznyew","stops":[{"fac":"Bennettsville Health and Rehab","addr":"710 Highway 15 401 Byp W, Bennettsville, South Carolina, 29512, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"ulluvb6z","stops":[{"fac":"Southland Healthcare","addr":"722 South Dargan Street, Florence, SC, 29506, US"},{"fac":"Palms at Florence","addr":"4438 Pamplico Highway, Florence, SC, 29505, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"g7xplqvq","stops":[{"fac":"Heritage Post Acute","addr":"515 warley st, Florence, SC, 29501, US"},{"fac":"Lake City Scranton HCC","addr":"1940 BOYD RD, SCRANTON, South Carolina, 29591, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"bi6arqiy","stops":[{"fac":"Elderwood Rehab","addr":"2715 South Island Road, Georgetown, SC, 29440, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"f6cy1i3q","stops":[{"fac":"Pinewood Nursing Care","addr":"1761 Pinewood Road, Sumter, SC, 29154, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"0ddv64k2","stops":[{"fac":"Faith Healthcare Center","addr":"617 W MARION ST, FLORENCE, South Carolina, 29501, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"uj4w0ku1","name":"Brea Butler","address":"103 Tanner Ct, NC, 27886,US","open":false,"trips":[{"id":"66812u0z","stops":[{"fac":"The Bridges of Hendricks Creek","addr":"3210 WESTERN BLVD, Tarboro, North Carolina, 27886, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"3","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"loqk2k6c","stops":[{"fac":"Our Community Hospital","addr":"921 Jr high School Rd, Scotland Neck, NC, 27874, US"},{"fac":"Scotland House","addr":"27669 NC Hwy 125, Scotland Neck, North Carolina, 27874, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"5","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"3e8y2pxk","stops":[{"fac":"Hunter Hill Senior Village","addr":"891 Noell Lane, Rocky Mount, North Carolina, 27804, US"},{"fac":"The Gardens of Nashville","addr":"1022 Eastern Ave, NASHVILLE, North Carolina, 27856, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"fvzpocly","stops":[{"fac":"The Lodge at Rocky Mount Health & Rehab","addr":"3322 VILLAGE RD, Rocky Mount, North Carolina, 27804, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"xwj5afg6","stops":[{"fac":"Carrolton of Nash","addr":"7369 Hunter Hill Road, Rocky Mount, NC, 27804, US"},{"fac":"The Landings of Rocky Mount Mills","addr":"1365 RIVER DR, Rocky Mount, North Carolina, 27804, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"dojhdoql","name":"Jennifer Hoskins","address":"7344 W 900 S, IN, 46124,US","open":false,"trips":[{"id":"05z9lwtw","stops":[{"fac":"Bishopville Manor","addr":"2779 Highway 15 N, Bishopville, SC, 29010, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"x4e3fv0w","stops":[{"fac":"Silver Oaks","addr":"2011 CHAPA DRIVE, COLUMBUS, Indiana, 47203, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"2feq8ejp","stops":[{"fac":"Miller's - Hope","addr":"7440 N CR 825 E, HOPE, Indiana, 47246, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"7muxzqlq","stops":[{"fac":"Richard Bean Blossom","addr":"5911 W State Road 46, Elletsville, IN, 47404, US"}],"legs":["3.6","",""],"roundTrip":"7.2","qualifying":"0","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"7slqo6xr","stops":[{"fac":"Hickory Creek - Scottsburg","addr":"1100 N GARDNER ST, SCOTTSBURG, Indiana, 47170, US"}],"legs":["53.9","",""],"roundTrip":"107.8","qualifying":"75.8","freq":"4","rate":"0.2","totalMiles":"303.2","totalCost":"60.64"},{"id":"72vp6ks5","stops":[{"fac":"Signature Healthcare - Terre Haute","addr":""}],"legs":["108.1","",""],"roundTrip":"216.2","qualifying":"184.2","freq":"4","rate":"0.2","totalMiles":"736.8","totalCost":"147.36"},{"id":"dup9duwe","stops":[{"fac":"Lake Point Village - IN","addr":"545 W Moonglo Road, Scottsburg, IN, 47170, US"}],"legs":["53.4","",""],"roundTrip":"106.8","qualifying":"74.8","freq":"4","rate":"0.2","totalMiles":"299.2","totalCost":"59.84"}]},{"id":"fmeyvpll","name":"Keisha Medina","address":"5357 Dunsmere Drive, OH, 43119,US","open":false,"trips":[{"id":"c4edpku0","stops":[{"fac":"Spring Meadows Care Center","addr":"1649 Park Road, Woodstock, OH, 43084, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"duavrafm","stops":[{"fac":"Scioto Pointe","addr":"740 Canonby Rd, Columbus, Ohio, 43223, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"12","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"q80wmf6x","stops":[{"fac":"Brookdale Trillium Crossing","addr":"3500 Trillium Crossing, Columbus, OH, 43235, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"ucckkr7p","name":"Joy Lee","address":"2530 Lily Drive, NC, 27258,US","open":false,"trips":[{"id":"ckmwt2ha","stops":[{"fac":"Alamance House AL","addr":"2766 Grand Oaks Blvd, Burlington, North Carolina, 27215, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"4cijsy5i","stops":[{"fac":"Brookdale Terrace of Greensboro","addr":"3896 N Elm Street, Greensboro, NC, 27455, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"1etosbyq","stops":[{"fac":"Mebane Ridge","addr":"1999 S NC HIGHWAY 119, Mebane, North Carolina, 27302, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"l28i3bsm","stops":[{"fac":"Oaks of Alamance","addr":"1670 Westbrook Avenue, Burlington, North Carolina, 27215, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"22hlk0uu","stops":[{"fac":"Oaks of Alamance","addr":"1670 Westbrook Avenue, Burlington, North Carolina, 27215, US"},{"fac":"Cedar Ridge IN","addr":"2680 S. Mebane St, Burlington, North Carolina, 27215, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"ygj9bp8p","stops":[{"fac":"Brookdale Skeet Club","addr":"1560 Skeet Club Rd, High Point, North Carolina, 27265, US"},{"fac":"Heritage Greens - Vera Springs","addr":"803 Meadowood St, Greensboro, North Carolina, 27409, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"mrlra9rq","name":"Allison Phillips","address":"1990 State Route 1379, Central City,KY, 42330","open":false,"trips":[{"id":"2f7ju3rh","stops":[{"fac":"Greenville Nursing and Rehab","addr":"521 Greene Drive, Greenville, KY, 42345, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"yewzgw1u","stops":[{"fac":"Highland Homes","addr":"219 Stevens Ave, Princeton, Kentucky, 42445, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"tehxa47l","stops":[{"fac":"Henderson Manor","addr":"301 WATSON LN, Henderson, Kentucky, 42420, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"qdafk0t4","stops":[{"fac":"Greenville Nursing and Rehab","addr":"521 Greene Drive, Greenville, KY, 42345, US"},{"fac":"Sparks Nursing Home","addr":"500 Whitmer Street, Central City, KY, 42330, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"rfyzincf","stops":[{"fac":"Metcalfe Health Care Center","addr":"701 SKYLINE DR, EDMONTON, Kentucky, 42129, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"qm5llius","name":"Cassey VanMeter","address":"5828 S Meridian Road, IN, 47660,US","open":false,"trips":[{"id":"qol8h8xa","stops":[{"fac":"Prairie Village","addr":"801 IN-57, Washington, IN, 47501, US"},{"fac":"Eastgate Manor","addr":"2119 E National Highway, Washington, IN, 47501, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"w49fp94q","stops":[{"fac":"Westview","addr":"1510 CLINIC DRIVE, BEDFORD, Indiana, 47421, US"},{"fac":"Good Samaritan Home and Rehabilitative Center","addr":"231 N JACKSON ST, OAKLAND CITY, Indiana, 47660, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"6","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"3u43kmsb","stops":[{"fac":"Good Samaritan Home and Rehabilitative Center","addr":"231 N JACKSON ST, OAKLAND CITY, Indiana, 47660, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"1h0idzw1","stops":[{"fac":"Hamilton Pointe Health and Rehab - SNF","addr":"3800 Eli Pl, Newburgh, Indiana, 47630, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"ncsmm1fi","name":"Brittany Ward","address":"141 Alberta Inn, KY, 42345,US","open":false,"trips":[{"id":"ndhaujzj","stops":[{"fac":"Better Senior Living","addr":"66 Shelby St, Cadiz, KY, 42211, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"znjfymny","stops":[{"fac":"Crittenden County Health and Rehab Center","addr":"201 Watson St, Marion, Kentucky, 42064, US"},{"fac":"Salem Springlake Health & Rehab Center","addr":"509 N HAYDEN AVE, SALEM, Kentucky, 42078, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"jrnpqrhk","stops":[{"fac":"Pennyrile Personal Care Home","addr":"502 Noel Ave, Hopkinsville, KY, 42240, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"0ld1nr18","stops":[{"fac":"Christian County Manor","addr":"2820 Richard St, Hopkinsville, KY, 42240, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"et2ell1v","stops":[{"fac":"Madisonville Manor","addr":"140 GIVENS ST, MADISONVILLE, Kentucky, 42431, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"1","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"dkqo7t8f","stops":[{"fac":"Holiday Inn Express Oak Grove","addr":"12759 Fort Campbell Boulevard, Oak Grove, KY, 42262, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"3","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"xskexkqt","name":"Amber Hyland","address":"5369 Pioneer Trail, OH, 44255,US","open":false,"trips":[{"id":"yn9os1d9","stops":[{"fac":"Bath Manor Special Care Centre","addr":"2330 SMITH ROAD, Akron, Ohio, 44333, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"57v8zzur","stops":[{"fac":"Arbors at Stow","addr":"2910 L'Ermitage Place, Stow, OH, 44224, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"bb2wwg4y","stops":[{"fac":"JAG Mansfield","addr":"50 Blymyer Avenue, Mansfield, OH, 44903, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"k4rnamxc","name":"Maddie (Ladner) Miller","address":"1251 Old Windmill Circle, VA, 22802,US","open":false,"trips":[{"id":"7z1pqdwy","stops":[{"fac":"River Edge Rehab & Nursing","addr":"1221 Rosser Ave, Waynesboro, VA, 22980, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"m09z0io1","stops":[{"fac":"Bellaire at Stone Port","addr":"1684 Port Hills Dr, Harrisonburg, VA, 22801, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"6","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"fydbu0v6","stops":[{"fac":"VMRC - Harrisonburg","addr":"1475 Virginia Ave, Harrisonburg, VA, 22802, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"lr3mg39e","stops":[{"fac":"Sunnyside NF/ALF/IL","addr":"3935 Sunnyside Drive, Ste A, Harrisonburg, VA, 22801, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"aefclorx","stops":[{"fac":"Brookdale Harrisonburg","addr":"2101 Deyerle Ave, Harrisonburg, VA, 22801, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"dhm4ryu7","name":"Katelynn Crull","address":"2604 Albright Road, IN, 46902,US","open":false,"trips":[{"id":"stkj58rq","stops":[{"fac":"Life Care - Rochester","addr":"827 W 13TH ST, ROCHESTER, Indiana, 46975, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"t2bqx5zv","stops":[{"fac":"North Woods Village","addr":"2233 W Jefferson Street, Kokomo, IN, 46901, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"16","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"l3qj1spd","name":"Jennifer Heller","address":"3310 Prairie View Circle, Danville,IN, 46122","open":false,"trips":[{"id":"ur9wprgt","stops":[{"fac":"Majestic Care Avon","addr":"455 S County Road 525 E, Avon, IN, 46123, US"},{"fac":"Traditions - Reagan Park","addr":"1176 Kingswood Dr, Avon, Indiana, 46123, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"7juxdw6m","stops":[{"fac":"Majestic Care Avon","addr":"455 S County Road 525 E, Avon, IN, 46123, US"},{"fac":"Brownsburg Meadows","addr":"2 East Tilden Dr, Brownsburg, IN, 46112, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"ulcdn7jl","stops":[{"fac":"Bethany Village","addr":"3518 Shelby St, Indianapolis, Indiana, 46227, US"},{"fac":"Rosewalk at Lutherwoods","addr":"1301 N Ritter Ave, Indianapolis, IN, 46219, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"rqgibopx","stops":[{"fac":"Compass Park Indiana Masonic Home","addr":"690 S STATE ST, FRANKLIN, Indiana, 46131, US"},{"fac":"Hellenic Senior Living - Indianapolis","addr":"8601 Shelby St, Indianapolis, Indiana, 46227, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"x27jnup2","stops":[{"fac":"Compass Park Indiana Masonic Home","addr":"690 S STATE ST, FRANKLIN, Indiana, 46131, US"},{"fac":"Morning Pointe of Franklin","addr":"75 S MILFORD DR, FRANKLIN, Indiana, 46131, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"oxcp0ge3","stops":[{"fac":"Harrison Terrace","addr":"1924 Wellesley Blvd, Indianapolis, Indiana, 46219, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"6kwqxho0","name":"Bren Hipp","address":"720 North Central Avenue, Locust,NC, 28097","open":false,"trips":[{"id":"h1sg3lho","stops":[{"fac":"Trinity Oaks","addr":"820 Klumac Road, Salisbury, NC, 28144, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"20","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"bd30i042","name":"Kayla Smith","address":"1004 Bellvue St, Burlington,NC, 27217","open":false,"trips":[{"id":"zqve3enk","stops":[{"fac":"Compass Healthcare and Rehabilitation","addr":"1401 South salisbury ave, Spencer, North Carolina, 28159, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"ll41pmba","stops":[{"fac":"Brookdale Northwest Greensboro","addr":"5809 Old Oak Ridge Rd, Greensboro, North Carolina, 27410, US"},{"fac":"Brookdale Terrace of Greensboro","addr":"3896 N Elm Street, Greensboro, NC, 27455, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"6byfaunv","stops":[{"fac":"Peak Resources Brookshire","addr":"300 Meadowland Driv, Hillsborough, North Carolina, 27278, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"wv8ebyua","stops":[{"fac":"Liberty Commons Nursing and Rehab of Alamance Coun","addr":"791 BOONE STATION DR, Burlington, North Carolina, 27215, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"3ohzdczx","stops":[{"fac":"Mebane Ridge","addr":"1999 S NC HIGHWAY 119, Mebane, North Carolina, 27302, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"ki4puvln","stops":[{"fac":"Home Place of Burlington","addr":"118 Alamance Rd, Burlington, North Carolina, 27215, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"2ejrf71k","name":"Abbas Smiley","address":"7321 Aspect Drive, Granger,IN, 46530","open":false,"trips":[{"id":"2auil3j8","stops":[{"fac":"Hamilton Grove","addr":"31869 Chicago Trail, New Carlisle, Indiana, 46552, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"j8gxtd30","stops":[{"fac":"Trustwell Living at Settler's Place","addr":"3304 MONROE STREET, LAPORTE, Indiana, 46350, US"},{"fac":"Windward Pointe","addr":"6235 Sterling Creek Road, Portage, IN, 46368, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"zt7onszs","stops":[{"fac":"Creek Side","addr":"1420 E Douglas Rd, Granger, Indiana, 46530, US"},{"fac":"Hellenic Senior Living - Mishawaka","addr":"1540 S Logan Street, MISHAWAKA, Indiana, 46544, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"h6gquu10","stops":[{"fac":"Creek Side","addr":"1420 E Douglas Rd, Granger, Indiana, 46530, US"},{"fac":"Silver Birch of Mishawaka","addr":"3630 Hickory Rd, Mishawaka, Indiana, 46545, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"lz4yge71","stops":[{"fac":"Trailpoint Village","addr":"1950 Ridgedale Rd, South Bend, Indiana, 46614, US"},{"fac":"Hellenic Senior Living - Mishawaka","addr":"1540 S Logan Street, MISHAWAKA, Indiana, 46544, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"vdi2uygu","stops":[{"fac":"Bell Tower Health & Rehab","addr":"5805 N Fir Road, GRANGER, Indiana, 46530, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"7iufzoxq","name":"Haylie Frascatore","address":"6965 Ogburn Farms Drive, Willow Spring,NC, 27592","open":false,"trips":[{"id":"ltital5z","stops":[{"fac":"Rolling Ridge Assisted Living","addr":"700 Mt. Olive Dr, Newton Grove, North Carolina, 28366, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"3","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"qduuti0k","stops":[{"fac":"Kingswood Reserve Senior Living","addr":"263 Mckenzie Ridge Dr, Clayton, NC, 27527, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"oeuviqim","stops":[{"fac":"Meadowview","addr":"250 NC 210, Smithfield, North Carolina, 27577, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"2oo49j3x","stops":[{"fac":"Four Oaks Senior Living","addr":"565 Boyette Rd, Four Oaks, North Carolina, 27524, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"8","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"fa2v04s3","name":"Myles Lindsay","address":"4870 Saponi Village Trail, Winston Salem,NC, 27127","open":false,"trips":[{"id":"5ydn5lez","stops":[{"fac":"Southfork","addr":"1345 Jonestown Rd, Winston- Salem, North Carolina, 27103, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"5l3yxkcw","stops":[{"fac":"Tranquility Care of Winston Salem","addr":"5100 Lansing Drive, Winston-Salem, North Carolina, 27105, US"},{"fac":"Trinity Glen","addr":"849 Waterworks Rd, Winston-Salem, North Carolina, 27101, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"duzxraln","stops":[{"fac":"Brookdale Reynolda","addr":"2980 Reynolda Rd, Winston- Salem, North Carolina, 27106, US"},{"fac":"The Southwood","addr":"3150 Burke Mill Rd, Winston-Salem, North Carolina, 27103, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"78y0lz4y","stops":[{"fac":"Trinity Elms","addr":"3750 Harper Road, Clemmons, NC, 27012, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"o2s6txjd","stops":[{"fac":"Brookdale Winston Salem","addr":"275 S. Peace Haven Road, Winston-Salem, North Carolina, 27104, US"},{"fac":"Brookstone of Clemmons","addr":"4430 Clinard Rd, Clemmons, North Carolina, 27012, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]},{"id":"sxnbslv3","name":"Miranda Starr","address":"2123 Dimmocks Mill Road, NC, 27278,US","open":false,"trips":[{"id":"5vh2aq2l","stops":[{"fac":"Dunmore Senior Living","addr":"200 Coventry Dr, Oxford, NC, 27565, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"6ffejz8y","stops":[{"fac":"Dunmore Senior Living","addr":"200 Coventry Dr, Oxford, NC, 27565, US"},{"fac":"Tre'mors Manor of Oxford","addr":"6016 Pine Town Road, OXFORD, North Carolina, 27565, US"}],"legs":["0.0","0.0","0.0"],"roundTrip":"","qualifying":"","freq":"2","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"3l648fxg","stops":[{"fac":"Roxboro Assisted Living","addr":"5660 Durham Rd, Roxboro, North Carolina, 27574, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"y8vnci5x","stops":[{"fac":"TerraBella Hillsborough","addr":"1911 ORANGE GROVE RD, Hillsborough, North Carolina, 27278, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"},{"id":"99c2gg53","stops":[{"fac":"Clayton House","addr":"145 Dairy Rd, Clayton, North Carolina, 27520, US"}],"legs":["0.0","",""],"roundTrip":"","qualifying":"","freq":"4","rate":"0.2","totalMiles":"0.0","totalCost":"0.0"}]}],"facNames":["AVIVA Brightview ALF","Abbotswood at Irving Park IN","Abbotswood at Stonehenge","Abernethey Laurels","Above the Rest","Absolute Care","Accordius Health at Aberdeen","Accordius Health at Brevard","Accordius Health at Clemmons","Accordius Health at Concord","Accordius Health at Gastonia","Accordius Health at Greensboro","Accordius Health at Lexington","Accordius Health at Monroe","Accordius Health at Mooresville","Accordius Health at Rose Manor","Accordius Health at Salisbury","Accordius Health at Wilkesboro","Accordius Health at Winston Salem","Adams Farm Living Rehabilitation","Addison Pointe Health & Rehab Center","Advance Healthcare","Ahoskie Assisted Living","Ahoskie House","Alamance Health Care Center","Alamance House AL","Alamance House MC","Albany Health and Rehabilitation","Aldersgate Assisted and Independent Living","Aldersgate Retirement Community - Asbury","Alexandria Care Center","Alleghany Center","Alleghany Health & Rehab","Allen County Clinic","Allen View Healthcare","Allison Pointe Healthcare Center","Alpha Care One","Alpha Concord Plantation","Alpha Home","Alpha Magnolia Garden","Alpine Health & Rehab of Asheboro","American Village","American Village Lincoln Lodge AL/IL","Americare Adult Home","Angel House","Anson Health and Rehabilitation","Aperion Care Greenfield","Aperion Care Monroe","Arbor Grove Village","Arbor Terrace of Asheville AL","Arbor Terrace of Asheville MC","Arbors at Gallipolis","Arbors at Milford","Arbors at Springfield","Arbors at Stow","Arbors at Streetsboro","Arbors at Sylvania","Arden Courts of Chagrin Falls","Arden Courts of Kenwood","Ardenwoods IN","Ardenwoods at Heather Glen","Ascension St Vincent - Dunn","Ascension St Vincent - Jennings","Ascension St Vincent - Salem","Ashford at Sturbridge","Ashford of Grove City","Ashford on Broad","Ashton Creek Health & Rehab Center","Ashton Grove","Ashton Health and Rehab","Ashton on Dorsey","Aspen Place Health Campus","Aston Park","Astoria Place of Cincinnati","Astoria Place of Silverton","Astral at Auburn","Atria Oakridge","Atrium Health Cleveland Pines","Atrium Health Huntersville Oaks","Atrium Health Jesse Helms Nursing Center","Atrium Health Sardis Oaks","Atrium Health Stanly Manor","Auburn Health Care","Auburn Village","Augusta Nursing & Rehab","Autumn Care of Altavista","Autumn Care of Biscoe","Autumn Care of Cornelius","Autumn Care of Drexel","Autumn Care of Raeford","Autumn Care of Salisbury","Autumn Care of Waynesville","Autumn Ridge Rehabilitation Centre","Autumn Rigde Wabash","Autumn Years Nursing Center","Autumnfield of Belhaven","Avalon Village","Aventura at Carriage Inn","Aventura at Humility House","Aventura at Oakwood Village","Aventura at Oakwood Village Assisted Living","Aventura at Oakwood Village SNF","Aventura at Shiloh Springs","Aventura at West Park","Aviva Baldwin Park","Ayden Court Nursing and Rehabilitation","Ayden Healthcare of Pique","Barbour Court Nursing and Rehabilitation Center","Bath Manor Special Care Centre","Bear Mountain Health and Rehab","Beaver Dam Nursing and Rehab","Beavercreek","Becky's Rest Home","Bedford Co Nursing Home","Beech Grove Meadows","Beech Grove Meadows-AL","Belaire","Bell Gardens Place","Bell Tower Health & Rehab","Bella Vista IN","BellaRose Nursing and Rehabilitation","Bellaire at Stone Port","Bellbrook","Belle's Place of Wabash","Belmont Terrance","Belmont at Tipton Lakes Senior Living","Bennettsville Health and Rehab","Bentley Commons","Berea Health and Rehab","Berea Nursing & Rehab","Berkshire Health & Rehab","Bermuda Village Retirement Center","Best Care Health and Rehab","Best of Care AL","Best of Care Assisted Living","Bethamy Retirement Center/Bethamy Retre","Bethany Village","Bethel Pointe Health & Rehab","Bethlehem Woods Nursing & Rehab","Better Senior Living","Betz Nursing Home","Bickford of Bexley","Bickford of Lancaster","Bickford of Wabash","Big Elm","Birchaven Village","Bishopville Manor","Blakey Hall AL","Blakey Hall MC","Bland County Nursing","Bloom at Eagle Creek","Blue Ridge Rehab & Nursing","Bluestone Health & Rehab","Blumenthal Nursing and Rehab","Boger City Rest Home","Bowling Green Nursing and Rehabilitation","Bradford Place","Bradford Square","Bradford Village West","Brandenburg Nursing and Rehabilitation","Brandon Oaks Nuring and Rehab","Brantwood Nursing and Rehab","Brian Center Alleghany","Brian Center Fincastle (Botetourt)","Brian Center Health & Rehab Durham","Briar Creek Health Center AL","Briar Creek Health Center SNF","Briarcliff Health and Rehabilitation","Brickyard Healthcare - Brandywine","Brickyard Healthcare - Churchman Care Center","Brickyard Healthcare - Elkhart","Brickyard Healthcare - Golden Rule","Brickyard Healthcare - Kokomo","Brickyard Healthcare - Muncie","Brickyard Healthcare- Richmond Care Center","Brickyard Healthcare-Municie","Bridgeport Healthcare","Bridgetown Nursing","Bridgewater Retirement Community","Bridgewater Retirement Nursing Home","Brighton Gardens Raleigh","Brighton Gardens Winston Salem","Bristol Village AL","Bristol Village SNF","Brockford Inn","Brookdale Asheville Overlook","Brookdale Asheville Walden Ridge","Brookdale Bristol","Brookdale Burlington AL","Brookdale Burlington MC","Brookdale Carriage Club II ALZ","Brookdale Carriage Club Providence I ALF","Brookdale Carriage Club Providence IN","Brookdale Carriage Club Providence SNF","Brookdale Cary","Brookdale Chapel Hill AL","Brookdale Chapel Hill MC","Brookdale Charlotte East AL","Brookdale Charlotte East IN","Brookdale Country Day Road","Brookdale Durham","Brookdale Eden","Brookdale Forest City","Brookdale Harrisonburg","Brookdale Hickory Northeast","Brookdale High Point - Hartley Drive","Brookdale High Point North AL","Brookdale High Point North MC","Brookdale Lawndale Park","Brookdale Lawndale Park Clairbridge","Brookdale Lexington","Brookdale MacArthur Park","Brookdale Meadowmont","Brookdale Monroe Square AL","Brookdale Monroe Square Clarebridge MC","Brookdale New Hope","Brookdale North Raleigh","Brookdale Northwest Greensboro","Brookdale Peachtree AL","Brookdale Reidsville","Brookdale Reynolda","Brookdale Robinwood","Brookdale Salisbury","Brookdale Skeet Club","Brookdale Smithfield","Brookdale South Charlotte","Brookdale South Park","Brookdale Staunton","Brookdale Terrace of Greensboro","Brookdale Trillium Crossing","Brookdale Union","Brookdale Union Park","Brookdale Union Park - Duplicate do Not Use","Brookdale Wake Forest","Brookdale Walden Ridge","Brookdale Winston Salem","Brookhaven Nursing Care Center","Brookside HealthCare Center","Brookstone Rest Home and Retirement","Brookstone Retirement Center","Brookstone Terrace of Thomasville","Brookstone of Clemmons","Brookville Healthcare Center","Brownsburg Meadows","Bryan health & Rehab","Buckeye Forest at Fairfield","Buckeye Forest at Jackson","Buckeye Forest at Madeira","Buckeye Forest at Portsmouth","Buckeye Forest of Fairfield","Bungalows at Bowling Green","CCRC I-Dover Nursing Home","CCRC-1 Dover Apartments","Cadence Garner AL","Cadence Garner MC","Cadence Mooresville","Cadence North Raleigh","Cadence at Wake Forest","Cambridge House","Cambridge Nursing and Rehabilitation Center","Camellia Gardens","Camellia Gardens Henderson","Campbell Place Assisted Living","Campbellsville Nursing and Rehabilitation","Candler Living Center AL","Canterbury House","Capital Oaks","Cardinal Care Dunn","Cardinal Care Hope Mills","Cardinal Care Jacksonville","Cardinal Healthcare and Rehab Center","Cardinal Nursing and Rehab","Cardinal Nursing and Rehabilitation","Cardinal Senior Living Bedford","Cardinal Senior Living Danville","Cardinal Senior Living Roanoke","CareCore Lima","CareCore Montgomery","CareCore of Westmoreland","Carleton Connersville","Carlisle Manor health Care","Carlisle of Carrboro","Carlyle Senior Care - Florence","Carlyle Senior Care Fork","Carlyle Senior Care Kingstree","Carlyle Senior Care \u2013 Williston","Carmel Hills","Carmel Manor Fort Thomas","Caroleton Healthcare Center","Carolina Meadows","Carolina Pines at Asheville","Carolina Pines at Greensboro","Carolina Rehab Center of Cumberland","Carolina Reserve of Durham AL","Carolina Reserve of Durham MC","Carolina Reserve of Hendersonville","Carolina Reserve of Laurel Park","Carriage Hill","Carriage House AL","Carriage House MC","Carrington Cottages","Carrington Place Botetourt","Carrington Place Wytheville","Carrington Place Wytheville ALF","Carrollton Manor","Carrollton of Lumberton","Carrolton","Carrolton of Fayetteville","Carrolton of Nash","Carrolton of Plymouth","Carrolton of Williamston","Carteret House","Carver Living Center","Castleton Health Care Center","Cedar Creek Of Fort Wayne","Cedar Creek of Bloomington","Cedar Creek of Logansport (Formerly McKinney Place)","Cedar Creek of Warsaw","Cedar Hurst Living of Marion","Cedar Mountain House","Cedar Ridge IN","Cedarbrook","Cedarhurst of Beaumont","Cedarhurst of Bloomington","Cedarhurst of Nicholasville","Cedarvale Rehab","Celebrate Senior Living Fort Wayne","Celina Manor","Centerville Health and Rehab","Centerville Place Assisted Living","Central Care","Central Continuing Care","Century Villa Health","Chamberlin Healthcare Center","Chandler Place","Chapman Place - Harbours","Charlestown Place at New Albany","Charter Senior Living of Bowling Green","Charter Senior Living of Charlotte - AL","Charter Senior Living of Charlotte - MC","Charter Senior Living of Hopkinsville","Chateau Rehabilitation - (Sig-Ft Wayne)","Chatham Health & Rehab of VA","Chatham Nursing & Rehab of NC","Chatham Nursing and Rehabilitation","Chatham Ridge AL","Chatham Ridge MC","Chautauqua Health and Rehab","Cheraw Healthcare","Cherry Point Bay Nursing and Rehab Center","Cherry Springs Village","Chesterton Manor","Chestnut Ridge","Chowan River Nursing and Rehab Center","Christian County Manor","Christian Heights Nursing and Rehab","Christina Place - AL","Chunn's Cove","Clairbridge Brookdale Lawndale 2","Clara Manor","Clark Rehab","Clarksville Health & Rehab","Clayton House","Clear Creek Nursing and Rehabilitation Center","Clegail Professional Services","Clemmons Village I","Clemmons Village II","Cleveland House","Clifton Care Center","Clifton Oaks Care Center","Clinton County Care and Rehab","Clinton House Rehab & HCC","Close to Home","Clovernook Healthcare Pavilion","Colonial Care","Colonial House of Shepherdsville","Colonial Manor","Colonial Manor Health Care","Colonial Nursing and Rehabilitation","Columbus Healthcare","Commonwealth Abingdon","Commonwealth Cedar Bluff","Commonwealth Charlottesville","Commonwealth Christiansburg","Commonwealth Hillsville","Commonwealth Radford","Commonwealth South Boston","Commonwealth Stratford House","Community Nursing and Rehab","Compass Healthcare and Rehab Hawfields, Inc","Compass Healthcare and Rehabilitation","Compass Park Indiana Masonic Home","Concord Care Center of Toledo","Concord Office","Concord Place","Conover Nursing and Rehab","Consulate of Woodstock","Continental Manor","Continuing Healthcare Solutions of Milan","Continuing Healthcare of Milan","Copper Knoll Health and Rehab","Core of Bedford Nursing","Core of Dale Nursing and Rehab","Cornerstone Manor","Cottonwood Villas","Country Home","Country Time","Countryside Meadows","Court House Manor","Court House Manor ALF","Courtland Terrace","Courtyard of Wheelersburg","Covenant Care","Coventry House Inn","Coventry House of Siler City","Coventry House of Zebulon","Coventry Meadows Assisted Living","Covered Bridge Health Campus","Creek Side","Creekwood Nursing and Rehabilitation","Cresent Grove","Crestwood Village - South - INDPLS","Crittenden County Health and Rehab Center","Croasdaile Clinic","Croasdaile Friendship House","Croasdaile Village","Croatan Ridge Rehabilitation & Nursing Center","Cross Road Retirement Community","Crown Colony","Crown Haven Health and Rehab","Crown Pointe Senior Living of Greensburg","Crystal Bluffs Rehab & Health Care Center","Cumberland Manor","Cumberland Valley Nursing & Rebhab","Currituck Health & Rehabilitation","Currituck House","Cypress Glen Retirement Community","Cypress Manor","Danville Centre for Health and Rehab","Danville Regional Rehab","Davco Personal Care Home","Davco in Owensborg TEMP LOCATION","Dayspring Of Wallace","Deal Care","Deal Care Inn","Deerfield Ridge","Dekalb Clinic","Delhi Post Acute","Dishman Personal Care","Divine Rehabilitation and Nursing of Toledo","Dogwood Crossing","Dominion Senior Living of Florence","Dominion Senior Living of Frankfort","Dominion of Louisville","Dominion/Richmond","Dover Nursing and Rehab","Dujarie House","Dunmore Senior Living","Durham Nursing & Rehab Center","Durham Ridge","Eagle Valley Meadows","Eagles Point","East Carolina Rehab and Wellness","East Lake","East Towne","East Towne Assisted Living","Easterseals ARC/NE Indiana","Eastgate Manor","Eastover Nursing Center","Eastway","Eden Spring","Edgecombe Health and Rehabilitation Center","Edgemont Healthcare","Edgewater Woods","Edgewood Manor of Greenfield","Edgewood Manor of Lucasville I","Edgewood Manor of Lucasville II","Edgewood Manor of Wellston - AL","Edgewood Manor of Wellston -SNF","Elderwood Rehab","Elizabeth City Health & Rehabilitation Center","Elizabethan Gardens Assisted Living","Elizabethtown Nursing and Rehab Center","Elkhart Meadows","Elkhart Place","Elliott Nursing and Rehab","Elms at Abbotswood","Elms at Michigan City","Elwood ALF","Elwood SNF","Embassy Pickerington","Embassy of Lebanon","Embassy of Valley View","Enclave of Springboro","Englewood Health & Rehabilitation Center - Fort Wayne","Englewood Health and Rehab - Englewood","English Meadows Blacksburg","English Meadows Fisherville","English Meadows at Preston Lake","English Meadows harrisonburg"],"facAddr":{"AVIVA Brightview ALF":"31 Woodlee Rd, Staunton, VA, 24401, US","Abbotswood at Irving Park IN":"3504 FLINT ST, Greensboro, North Carolina, 27405, US","Abbotswood at Stonehenge":"7900 Creedmoor Rd, Raleigh, North Carolina, 27613, US","Abernethey Laurels":"102 Leonard Avenue, NEWTON, North Carolina, 28658, US","Above the Rest":"2385 Pamlico Highway, Florence, SC, 29505, US","Absolute Care":"431 Junny Rd, Angier, North Carolina, 27501, US","Accordius Health at Aberdeen":"915 Pee Dee Rd, Aberdeen, North Carolina, 28315, US","Accordius Health at Brevard":"115 North Country Club Road, Brevard, North Carolina, 28712, US","Accordius Health at Clemmons":"3905 Clemmons Road, Clemmons, North Carolina, 27012, US","Accordius Health at Concord":"515 Lake Concord Rd NE, Concord, North Carolina, 28025, US","Accordius Health at Gastonia":"416 North Highland Street, Gastonia, North Carolina, 28052, US","Accordius Health at Greensboro":"1201 Carolina Street, Greensboro, North Carolina, 27401, US","Accordius Health at Lexington":"279 Brian Center Dr, Lexington, North Carolina, 27292, US","Accordius Health at Monroe":"204 Old Highway 74 East, Monroe, North Carolina, 28112, US","Accordius Health at Mooresville":"752 East Center ave, MOORESVILLE, North Carolina, 28115, US","Accordius Health at Rose Manor":"4230 North Roxboro Stree, Durham, North Carolina, 27704, US","Accordius Health at Salisbury":"635 Statesville Blvd, Salisbury, North Carolina, 28144, US","Accordius Health at Wilkesboro":", , North Carolina, , US","Accordius Health at Winston Salem":"4911 Brian Center Lane, Winston-Salem, North Carolina, 27106, US","Adams Farm Living Rehabilitation":"5100 MACKAY RD, JAMESTOWN, North Carolina, 27282, US","Addison Pointe Health & Rehab Center":"780 DICKINSON RD, CHESTERTON, Indiana, 46304, US","Advance Healthcare":"955 GARDEN LAKE PARKWAY, TOLEDO, Ohio, 43614, US","Ahoskie Assisted Living":"240 South Earley Station Road, Ahoskie, North Carolina, 27910, US","Ahoskie House":"407 LOFTIN LN S, Ahoskie, North Carolina, 27910, US","Alamance Health Care Center":"1987 Hilton Rd, Burlington, North Carolina, 27217, US","Alamance House AL":"2766 Grand Oaks Blvd, Burlington, North Carolina, 27215, US","Alamance House MC":"2766 Grand Oaks Blvd, Burlington, North Carolina, 27215, US","Albany Health and Rehabilitation":"910 W Walnut Street, ALBANY, Indiana, 47320, US","Aldersgate Assisted and Independent Living":"3800 Shamrock Drive, Charlotte, North Carolina, 28215, US","Aldersgate Retirement Community - Asbury":"3625 Willard Farrow Drive, Charlotte, North Carolina, 28215, US","Alexandria Care Center":"1912 S PARK AVE, ALEXANDRIA, Indiana, 46001, US","Alleghany Center":"179 Combs Street, Sparta, North Carolina, 28675, US","Alleghany Health & Rehab":"1725 Main St, Clifton Forge, VA , 24422, US","Allen County Clinic":"200 E Berry St, Fort Wayne, Indiana, 46802, US","Allen View Healthcare":"2615 DERR ROAD, SPRINGFIELD, Ohio, 45503, US","Allison Pointe Healthcare Center":"5226 East 82nd Street, Indianapolis, Indiana, 46250, US","Alpha Care One":"2060 West Fifth St, Greenville, North Carolina, 27834, US","Alpha Concord Plantation":"2809 Old Concord Road , Salisbury , North Carolina, 28146, US","Alpha Home":"2640 COLD SPRING RD, Indianapolis, Indiana, 46222, US","Alpha Magnolia Garden":"930 Highway 158 Business East, Warrenton, North Carolina, 27589, US","Alpine Health & Rehab of Asheboro":"230 E PRESNELL ST, Asheboro, North Carolina, 27203, US","American Village":"2026 E 54th St, Indianapolis, IN, 46220, US","American Village Lincoln Lodge AL/IL":"1790 E 16th St, Indianapolis, IN, 46220, US","Americare Adult Home":"101 ANNIE PARKER CIR, Smithfield, North Carolina, 27577, US","Angel House":"60-D Hornot Circle, Asheville, North Carolina, 28806, US","Anson Health and Rehabilitation":"405 Greene St, Wadesboro, North Carolina, 28170, US","Aperion Care Greenfield":"5430 W US Hwy 40, Greenfield, Indiana, 46140, US","Aperion Care Monroe":"120 E MILLER DRIVE, BLOOMINGTON, Indiana, 47401, US","Arbor Grove Village":"1021 E CENTRAL AVE, GREENSBURG, Indiana, 47240, US","Arbor Terrace of Asheville AL":"3199 SWEETEN CREEK RD, Asheville, North Carolina, 28803, US","Arbor Terrace of Asheville MC":"3199 SWEETEN CREEK RD, Asheville, North Carolina, 28803, US","Arbors at Gallipolis":"170 Pinecrest Dr, Gallipolis, Ohio, 45631, US","Arbors at Milford":"5900 MEADOWCREEK DRIVE, MILFORD, Ohio, 45150, US","Arbors at Springfield":"1600 St Paris Pike,, Springfield, Ohio, 45504, US","Arbors at Stow":"2910 L'Ermitage Place, Stow, OH, 44224, US","Arbors at Streetsboro":"1645 Maplewood Drive, Streestsboro, OH, 44241, US","Arbors at Sylvania":"7120 Port Sylvania Dr, Toledo, Ohio, 43617, US","Arden Courts of Chagrin Falls":"8100 EAST WASHINGTON STREET, Chagrin Falls, Ohio, 44023, US","Arden Courts of Kenwood":"4580 E Galbraith Rd, Cincinnati, Ohio, 45236, US","Ardenwoods IN":"2400 Appalachian Blvd, Arden, North Carolina, 28704, US","Ardenwoods at Heather Glen":"103 Appalachian Blvd, Arden, North Carolina, 28704, US","Ascension St Vincent - Dunn":"1600 23rd St, Bedford, Indiana, 47421, US","Ascension St Vincent - Jennings":"301 Henry St   Bldg C, North Vernon, Indiana, 47265, US","Ascension St Vincent - Salem":"911 N Shelby St, Salem, Indiana, 47167, US","Ashford at Sturbridge":"3700 Sturbridge Court, Hilliard, Ohio, 43026, US","Ashford of Grove City":"3197 Southwest Blvd, Grove City, Ohio, 43123, US","Ashford on Broad":"4801 E BROAD ST, COLUMBUS, Ohio, 43213, US","Ashton Creek Health & Rehab Center":"4111 PARK PLACE DRIVE, Fort Wayne, Indiana, 46845, US","Ashton Grove":"115 Ashton Grove Path, Georgetown, Kentucky, 40324, US","Ashton Health and Rehab":"5533 BURLINGTON RD, MC LEANSVILLE, North Carolina, 27301, US","Ashton on Dorsey":"1105 Dorsey Lane, Louisville, KY, 40223, US","Aspen Place Health Campus":"2320 N Montgomery Rd, Greensburg, Indiana, 47240, US","Aston Park":"380 Brevard Road, Asheville, NC, 28806, US","Astoria Place of Cincinnati":"3627 Harvey Avenue, CINCINNATI, Ohio, 45229, US","Astoria Place of Silverton":"6922 Ohio Ave, CINCINNATI, Ohio, 45236, US","Astral at Auburn":"1675 W 7th Street, AUBURN, Indiana, 46706, US","Atria Oakridge":"10810 Sandy Oak Ln, Raleigh, North Carolina, 27614, US","Atrium Health Cleveland Pines":"1404 N LAFAYETTE ST, Shelby, North Carolina, 28150, US","Atrium Health Huntersville Oaks":"12019 VERHOEFF DR, HUNTERSVILLE, North Carolina, 28078, US","Atrium Health Jesse Helms Nursing Center":"1411 DOVE ST, Monroe, North Carolina, 28112, US","Atrium Health Sardis Oaks":"5151 SARDIS RD, Charlotte, North Carolina, 28270, US","Atrium Health Stanly Manor":"625 BETHANY RD, Albemarle, North Carolina, 28001, US","Auburn Health Care":"139 PEARL ST, AUBURN, Kentucky, 42206, US","Auburn Village":"1751 Wesley Road, AUBURN, Indiana, 46707, US","Augusta Nursing & Rehab":"83 Crossroads Lane, Fishersville, VA , 22939, US","Autumn Care of Altavista":"1317 Lola Ave, Altavista, VA, 24517, US","Autumn Care of Biscoe":"401 Lambert Rd, Biscoe, North Carolina, 27209, US","Autumn Care of Cornelius":"19530 MT ZION PKWY, CORNELIUS, North Carolina, 28031, US","Autumn Care of Drexel":"307 Oakland Ave, Morganton, NC, 28655, US","Autumn Care of Raeford":"1206 N Fulton St, Raeford, North Carolina, 28376, US","Autumn Care of Salisbury":"1505 BRINGLE FERRY ROAD, Salisbury, North Carolina, 28146, US","Autumn Care of Waynesville":"360 Old Balsam Rd, Waynesville, North Carolina, 28786, US","Autumn Ridge Rehabilitation Centre":"600 WASHINGTON RD, WABASH, Indiana, 46992, US","Autumn Rigde Wabash":"600 Washington ST, Wabash, IN, 46992, US","Autumn Years Nursing Center":"580 EAST WASHINGTON AVENUE, SABINA, Ohio, 45169, US","Autumnfield of Belhaven":"1345 Seed Tick Neck Rd, Washington, North Carolina, 27865, US","Avalon Village":"200 KINGSTON CIRCLE, LIGONIER, Indiana, 46767, US","Aventura at Carriage Inn":"5040 Philadelphia Dr, Dayton, Ohio, 45415, US","Aventura at Humility House":"755 OHLTOWN ROAD, AUSTINTOWN, Ohio, 44515, US","Aventura at Oakwood Village":"1500 Villa Rd, Springfield, Ohio, 45503, US","Aventura at Oakwood Village Assisted Living":"1500 Villa Rd, Springfield, Ohio, 45503, US","Aventura at Oakwood Village SNF":"1500 Villa Rd, Springfield, Ohio, 45503, US","Aventura at Shiloh Springs":"3500 Shiloh Springs Rd, Trotwood , Ohio, 45426, US","Aventura at West Park":"2950 W Park Dr, Cincinnati, Ohio, 45238, US","Aviva Baldwin Park":"21 Woodlee Road, Staunton, VA, 24401, US","Ayden Court Nursing and Rehabilitation":"128 Snow Hill St, Ayden, North Carolina, 28513, US","Ayden Healthcare of Pique":"275 Kienle Dr, Piqua, OH, 45356, US","Barbour Court Nursing and Rehabilitation Center":"515 Barbour Road , Smithfield , North Carolina, 27577, US","Bath Manor Special Care Centre":"2330 SMITH ROAD, Akron, Ohio, 44333, US","Bear Mountain Health and Rehab":"500 Beaverdam Rd, Asheville, North Carolina, 28804, US","Beaver Dam Nursing and Rehab":"1595 S US HIGHWAY 231 Beaver Dam, BEAVER DAM, Kentucky, 42320, US","Beavercreek":"3854 Park Overlook Drive, beavercreek, OH, 45431, US","Becky's Rest Home":"316 LOWER BRUSH CREEK RD, Fletcher, North Carolina, 28732, US","Bedford Co Nursing Home":"1229 County Farm Rd, Bedford, VA, 24523, US","Beech Grove Meadows":"2002 ALBANY ST, BEECH GROVE, Indiana, 46107, US","Beech Grove Meadows-AL":"2002 Albany ST, Beech Grove, Indiana, 46107, US","Belaire":"2065 Lyon Street, Gastonia, North Carolina, 28052, US","Bell Gardens Place":"251 HARRY SAUNDER ROAD, HILLSBORO, Ohio, 45133, US","Bell Tower Health & Rehab":"5805 N Fir Road, GRANGER, Indiana, 46530, US","Bella Vista IN":"55 PINEY MOUNTAIN DR, Asheville, North Carolina, 28805, US","BellaRose Nursing and Rehabilitation":"200 Bella Rose Way, Garner, North Carolina, 27529, US","Bellaire at Stone Port":"1684 Port Hills Dr, Harrisonburg, VA, 22801, US","Bellbrook":"1957 N Lakeman Dr, Bellbrook, OH, 45305, US","Belle's Place of Wabash":"3037 West Division Rd, Wabash, IN, 46992, US","Belmont Terrance":"7300 Woodspoint Dr, Florence, KY, 41042, US","Belmont at Tipton Lakes Senior Living":"540 BELMONT DR, COLUMBUS, Indiana, 47201, US","Bennettsville Health and Rehab":"710 Highway 15 401 Byp W, Bennettsville, South Carolina, 29512, US","Bentley Commons":"1604 Graves Mill Road, Lynchburg, VA, 24502, US","Berea Health and Rehab":"601 RICHMOND RD , North BEREA, Kentucky, 40403, US","Berea Nursing & Rehab":"55 Brimley Drive, Fredericksburg, VA, , US","Berkshire Health & Rehab":"705 Clearview Dr, Vinton, VA , 24179, US","Bermuda Village Retirement Center":"142 Bermuda Village Drive , Bermuda Run, North Carolina, 27006, US","Best Care Health and Rehab":"2159 DOGWOOD RIDGE, WHEELERSBURG, Ohio, 45694, US","Best of Care AL":"234 Northdale Ave, Kannapolis, NC, 28081, US","Best of Care Assisted Living":"234 Northdale Avenue, Kannapolis, North Carolina, 28081, US","Bethamy Retirement Center/Bethamy Retre":"909 N. Salisbury Ave, Spencer, North Carolina, 28159, US","Bethany Village":"3518 Shelby St, Indianapolis, Indiana, 46227, US","Bethel Pointe Health & Rehab":"3400 W COMMUNITY DRIVE, MUNCIE, Indiana, 47304, US","Bethlehem Woods Nursing & Rehab":"4430 ELSDALE DRIVE, Fort Wayne, Indiana, 46835, US","Better Senior Living":"66 Shelby St, Cadiz, KY, 42211, US","Betz Nursing Home":"116 Betz Rd, Auburn, IN, 46706, US","Bickford of Bexley":"2600 E Main St, Columbus, Ohio, 43209, US","Bickford of Lancaster":"2600 E MAIN ST, BEXLEY, Ohio, 43209, US","Bickford of Wabash":"3037 W Division Road, WABASH, Indiana, 46992, US","Big Elm":"1285 West A Street, Kannapolis, North Carolina, 28081, US","Birchaven Village":"15100 Birchaven Ln, Findlay, Ohio, 45840, US","Bishopville Manor":"2779 Highway 15 N, Bishopville, SC, 29010, US","Blakey Hall AL":"501 Manning Ave, Elom, North Carolina, 27244, US","Blakey Hall MC":"501 Manning Ave, Elom, North Carolina, 27244, US","Bland County Nursing":"12185 Grapefield Rd, Bastian, VA, 24314, US","Bloom at Eagle Creek":"5045 W 52nd Street, Indianapolis, Indiana, 46254, US","Blue Ridge Rehab & Nursing":"94 South Ave, Harrisonburg, VA, 22801, US","Bluestone Health & Rehab":"1600 Bland St, Bluefield, WV, 24701, US","Blumenthal Nursing and Rehab":"3724 Wireless Dr, Greensboro, North Carolina, 27455, US","Boger City Rest Home":"1428 Little Valley Lane, Lincolnton, North Carolina, 28093, US","Bowling Green Nursing and Rehabilitation":"1561 Newton Ave,, Bowling Green, Kentucky, 42104, US","Bradford Place":"1302 MILLVILLE AVE, HAMILTON, Ohio, 45013, US","Bradford Square":"1040 US Highway 127 Soutn, Frakfort, KY, 40601, US","Bradford Village West":"602 Piney Grove Road, Kernersville, North Carolina, 27284, US","Brandenburg Nursing and Rehabilitation":"814 OLD EKRON RD, BRANDENBURG, Kentucky, 40108, US","Brandon Oaks Nuring and Rehab":"3837 Brandon Ave SW, Roanoke, VA, 24018, US","Brantwood Nursing and Rehab":"1038 College Street, OXFORD, North Carolina, 27565, US","Brian Center Alleghany":"100 Arh Ln, Low Moor, VA, 24457, US","Brian Center Fincastle (Botetourt)":"188 Old Fincastle Rd, Fincastle, VA, 24090, US","Brian Center Health & Rehab Durham":"6000 Fayetteville Rd, Durham, NC, 27713, US","Briar Creek Health Center AL":"6041 Piedmont Row Drive South, Charlotte, North Carolina, 28210, US","Briar Creek Health Center SNF":"4801 Barclay Downs Drive, Charlotte, North Carolina, 28210, US","Briarcliff Health and Rehabilitation":"5024 W Western Ave, South Bend, Indiana, 46619, US","Brickyard Healthcare - Brandywine":"745 N SWOPE ST, Greenfield, Indiana, 46140, US","Brickyard Healthcare - Churchman Care Center":"2860 CHURCHMAN AVE, Indianapolis, Indiana, 46203, US","Brickyard Healthcare - Elkhart":"1001 W. HIVELY AVE, ELKHART, Indiana, 46517, US","Brickyard Healthcare - Golden Rule":"2330 STRAIGHTLINE PIKE, RICHMOND, Indiana, 47374, US","Brickyard Healthcare - Kokomo":"2905 W SYCAMORE ST, KOKOMO, Indiana, 46901, US","Brickyard Healthcare - Muncie":"2701 N LYNN-MARIE DRIVE, MUNCIE, Indiana, 47304, US","Brickyard Healthcare- Richmond Care Center":"1042 Oak Dr, Richmond, Indiana, 47374, US","Brickyard Healthcare-Municie":"2701 N Lyn Mar Dr, Municie, IN, 47304, US","Bridgeport Healthcare":"2125 ROYCE ST, PORTSMOUTH, Ohio, 45662, US","Bridgetown Nursing":"4307 BRIDGETOWN ROAD, CINCINNATI, Ohio, 45211, US","Bridgewater Retirement Community":"302 N 2nd Street, Bridgewater, VA, 22812, US","Bridgewater Retirement Nursing Home":"302 N 2nd Street, Bridgewater, VA, 22812, US","Brighton Gardens Raleigh":"3101 Duraleigh Rd, Raleigh, North Carolina, 27612, US","Brighton Gardens Winston Salem":"2601 Reynolda Rd, Winston-Salem, North Carolina, 27106, US","Bristol Village AL":"444 Cherry Street, Waverly, Ohio, 45690, US","Bristol Village SNF":"444 Cherry Street, Waverly, Ohio, 45690, US","Brockford Inn":"56 N Highland Ave, Granite Falls, North Carolina, 28630, US","Brookdale Asheville Overlook":"308 Overlook Rd, Asheville, North Carolina, 28803, US","Brookdale Asheville Walden Ridge":"4 Walden Ridge Drive , Asheville, North Carolina, 28803, US","Brookdale Bristol":"375 Liberty PL, Bristol, VA, 24201, US","Brookdale Burlington AL":"3619 S. Mebane St, Burlington, North Carolina, 27215, US","Brookdale Burlington MC":"3619 S. Mebane St, Burlington, North Carolina, 27215, US","Brookdale Carriage Club II ALZ":"5816 Old Providence Road, Charlotte, North Carolina, 28226, US","Brookdale Carriage Club Providence I ALF":"5802 Old Providence Road, Charlotte, North Carolina, 28226, US","Brookdale Carriage Club Providence IN":"5800 Old Providence Rd, Charlotte, North Carolina, 28226, US","Brookdale Carriage Club Providence SNF":"5800 Old Providence Road, Charlotte, North Carolina, 28226, US","Brookdale Cary":"7870 Chapel Hill Rd, Cary, North Carolina, 27513, US","Brookdale Chapel Hill AL":"2220 Farmington Dr, Chapel Hill, North Carolina, 27517, US","Brookdale Chapel Hill MC":"2230 Farmington Dr, Chapel Hill, North Carolina, 27517, US","Brookdale Charlotte East AL":"6053 WILORA LAKE RD, Charlotte, North Carolina, 28212, US","Brookdale Charlotte East IN":"6053 WILORA LAKE RD, Charlotte, North Carolina, 28212, US","Brookdale Country Day Road":"380 Country Day Rd, Goldsboro, North Carolina, 27530, US","Brookdale Durham":"4434 BEN FRANKLIN BLVD, Durham, North Carolina, 27704, US","Brookdale Eden":"314 West Kings Highway, Eden , North Carolina, 27288, US","Brookdale Forest City":"493 Piney Ridge Rd, Forest City, North Carolina, 28043, US","Brookdale Harrisonburg":"2101 Deyerle Ave, Harrisonburg, VA, 22801, US","Brookdale Hickory Northeast":"2530 16th Street Northeast, Hickory, North Carolina, 28601, US","Brookdale High Point - Hartley Drive":"201 W. Hartley Dr, High Point, North Carolina, 27265, US","Brookdale High Point North AL":"1568 Skeet Club Rd, High Point, North Carolina, 27265, US","Brookdale High Point North MC":"1564 Skeet Club Rd, High Point, North Carolina, 27265, US","Brookdale Lawndale Park":"4400 LAWNDALE DRIVE, Greensboro, North Carolina, 27455, US","Brookdale Lawndale Park Clairbridge":"4402 Lawndale Dr, Greensboro, North Carolina, 27455, US","Brookdale Lexington":"161 Young Drive, Lexington, North Carolina, 27292, US","Brookdale MacArthur Park":"111 MacArthur Dr, Cary, North Carolina, 27513, US","Brookdale Meadowmont":"100 Lanark Rd, Chapel Hill, North Carolina, 27517, US","Brookdale Monroe Square AL":"918 Fitzgerald St , Monroe , North Carolina, 28112, US","Brookdale Monroe Square Clarebridge MC":"918 Fitzgerald St, Monroe, North Carolina, 28112, US","Brookdale New Hope":"1680 South New Hope Rd, Gastonia, North Carolina, 28054, US","Brookdale North Raleigh":"1200 Carlos Dr, Raleigh, North Carolina, 27609, US","Brookdale Northwest Greensboro":"5809 Old Oak Ridge Rd, Greensboro, North Carolina, 27410, US","Brookdale Peachtree AL":"2806 Peachtree Road, Statesville, NC, 28625, US","Brookdale Reidsville":"2931 Vance St, Reidsville, North Carolina, 27320, US","Brookdale Reynolda":"2980 Reynolda Rd, Winston- Salem, North Carolina, 27106, US","Brookdale Robinwood":"1750 Robinwood Rd, Gastonia, North Carolina, 28054, US","Brookdale Salisbury":"2201 Statesville Boulevard, Salisbury, North Carolina, 28147, US","Brookdale Skeet Club":"1560 Skeet Club Rd, High Point, North Carolina, 27265, US","Brookdale Smithfield":"830 Berkshire Rd, Smithfield, North Carolina, 27577, US","Brookdale South Charlotte":"5515 Rea Rd, Charlotte, North Carolina, 28226, US","Brookdale South Park":"5326 Park Rd, Charlotte, North Carolina, 28209, US","Brookdale Staunton":"1900 Hillsmere Lane, Staunton, VA, 24401, US","Brookdale Terrace of Greensboro":"3896 N Elm Street, Greensboro, NC, 27455, US","Brookdale Trillium Crossing":"3500 Trillium Crossing, Columbus, OH, 43235, US","Brookdale Union":"1717 Union Rd, Gastonia, North Carolina, 28054, US","Brookdale Union Park":"1316 Patterson St, Monroe, North Carolina, 28112, US","Brookdale Union Park - Duplicate do Not Use":"1316 Patterson St., Monroe, North Carolina, 28112, US","Brookdale Wake Forest":"611 Brooks St, Wake Forest, North Carolina, 27587, US","Brookdale Walden Ridge":"4 Walden Ridge Dr, Asheville, North Carolina, 28803, US","Brookdale Winston Salem":"275 S. Peace Haven Road, Winston-Salem, North Carolina, 27104, US","Brookhaven Nursing Care Center":"ONE COUNTRY LANE, Brookville, Ohio, 45309, US","Brookside HealthCare Center":"315 LILIENTHAL ST, CINCINNATI, Ohio, 45204, US","Brookstone Rest Home and Retirement":"2968 Old Salisbury Rd, Lexington, North Carolina, 27295, US","Brookstone Retirement Center":"2968 Old Salisbury Road, Lexington , North Carolina, 27295, US","Brookstone Terrace of Thomasville":"915 W COOKSEY DR, Thomasville, North Carolina, 27360, US","Brookstone of Clemmons":"4430 Clinard Rd, Clemmons, North Carolina, 27012, US","Brookville Healthcare Center":"11049 IN-101, Brookville, Indiana, 47012, US","Brownsburg Meadows":"2 East Tilden Dr, Brownsburg, IN, 46112, US","Bryan health & Rehab":"921 Junior High School Rd, Scotland Neck, NC, 27874, US","Buckeye Forest at Fairfield":"3801 Woodridge Blvd, Fairfield, Ohio, 45014, US","Buckeye Forest at Jackson":"8668 STATE ROUTE 93, JACKSON, Ohio, 45640, US","Buckeye Forest at Madeira":"5970 Kenwood Road, Madeira, OH, 45243, US","Buckeye Forest at Portsmouth":"20 EASTER DR, PORTSMOUTH, Ohio, 45662, US","Buckeye Forest of Fairfield":"3801 Woodridge Blvd, Fairfield, OH, 45014, US","Bungalows at Bowling Green":"981 Senior Living Community, Bowling Green, KY, 42104, US","CCRC I-Dover Nursing Home":"860 Iron Avenue, Dover, Ohio, 44622, US","CCRC-1 Dover Apartments":"860 Iron Avenue, Dover, Ohio, 44622, US","Cadence Garner AL":"200 MINGLEWOOD DR, Garner, North Carolina, 27529, US","Cadence Garner MC":"200 MINGLEWOOD DR, Garner, North Carolina, 27529, US","Cadence Mooresville":"198 E WATERLYNN RD, MOORESVILLE, North Carolina, 28117, US","Cadence North Raleigh":"5219 Old Wake Forest Rd, Raleigh, North Carolina, 27609, US","Cadence at Wake Forest":"3218 Heritage Trade Dr, Wake Forest, North Carolina, 27587, US","Cambridge House":"114 Tenth St NE, Hildebran, North Carolina, 28637, US","Cambridge Nursing and Rehabilitation Center":"2020 Cambridge Dr, Lexington, Kentucky, 40504, US","Camellia Gardens":"5010 S. Alston Ave., Durham, North Carolina, 27713, US","Camellia Gardens Henderson":"280 South Beckford Driv, Henderson, North Carolina, 27536, US","Campbell Place Assisted Living":"356 KENT DRIVE, BELLEFONTAINE, Ohio, 43311, US","Campbellsville Nursing and Rehabilitation":"1980 Old Greensburg Road, Campbellsville, Kentucky, 42718, US","Candler Living Center AL":"136 Robinson Cove Rd, Candler, North Carolina, 28715, US","Canterbury House":"1284 Leasburg Road, Roxboro, North Carolina, 27574, US","Capital Oaks":"6498 Ray Rd, Raleigh, North Carolina, 27613, US","Cardinal Care Dunn":"217 Jonesboro Rd., DUNN, North Carolina, 28334, US","Cardinal Care Hope Mills":"4124 Pecan Drive, HOPE MILLS, North Carolina, 28348, US","Cardinal Care Jacksonville":"1241 ONSLOW PINES RD, JACKSONVILLE, North Carolina, 28540, US","Cardinal Healthcare and Rehab Center":"931 N ASPEN ST, Lincolnton, North Carolina, 28092, US","Cardinal Nursing and Rehab":"1121 E LASALLE AVE, SOUTH BEND, Indiana, 46617, US","Cardinal Nursing and Rehabilitation":"1121 Lasalle Ave, South Bend, Indiana, 46617, US","Cardinal Senior Living Bedford":"1350 Longwood Ave, Bedford, VA, 24523, US","Cardinal Senior Living Danville":"432 Hermitage Dr, Danville, VA, 24541, US","Cardinal Senior Living Roanoke":"3585 Brambleton Ave, Roanoke, VA, 24019, US","CareCore Lima":"599 S SHAWNEE STREET, LIMA, Ohio, 45804, US","CareCore Montgomery":"7777 Cooper Road, CINCINNATI, Ohio, 45242, US","CareCore of Westmoreland":"230 Cherry St., CHILLICOTHE, Ohio, 45601, US","Carleton Connersville":"2500 Iowa Ave, Connersville, IN, 47331, US","Carlisle Manor health Care":"730 Hillcrest Drive, Carlisle, Ohio, 45005, US","Carlisle of Carrboro":"624 Jones Ferry Road, Carrboro, North Carolina, 27510, US","Carlyle Senior Care - Florence":"133 West Clarke Road, FLORENCE, South Carolina, 29501, US","Carlyle Senior Care Fork":"1727 Buck Swamp Road, Fork, South Carolina, 29543, US","Carlyle Senior Care Kingstree":"401 Nelson Blvd, Kingstree, South Carolina, 29556, US","Carlyle Senior Care \u2013 Williston":"5721 SPRINGFIELD RD, WILLISTON, South Carolina, 29853, US","Carmel Hills":"2801 Carmel Rd, Charlotte, North Carolina, 28226, US","Carmel Manor Fort Thomas":"100 Carmel Manor Rd,, Fort Thomas, Kentucky, 41075, US","Caroleton Healthcare Center":"2550 IOWA AVE, CONNERSVILLE, Indiana, 47331, US","Carolina Meadows":"500 Carolina Meadows, Chapel Hill, North Carolina, 27517, US","Carolina Pines at Asheville":"96 Victoria Road, Asheville, North Carolina, 28801, US","Carolina Pines at Greensboro":"109 South Holden Rd, Greensboro, North Carolina, 27407, US","Carolina Rehab Center of Cumberland":"4600 CUMBERLAND RD, Fayetteville, North Carolina, 28306, US","Carolina Reserve of Durham AL":"4523 Hope Valley Rd, Durham, North Carolina, 27707, US","Carolina Reserve of Durham MC":"4523 Hope Valley Rd, Durham, North Carolina, 27707, US","Carolina Reserve of Hendersonville":"1820 Pisgah Dr, Hendersonville, North Carolina, 28791, US","Carolina Reserve of Laurel Park":"1825 Pisgah Dr, Hendersonville, North Carolina, 28791, US","Carriage Hill":"1203 Roundtree Dr., Bedford, VA, 24523, US","Carriage House AL":"3896 N Elm Street, Greensboro, North Carolina, 27455, US","Carriage House MC":"3896 N Elm Street, Greensboro, North Carolina, 27455, US","Carrington Cottages":"270 Commons Pkwy, Daleville, VA, 24083, US","Carrington Place Botetourt":"290 Commons Pkwy, Daleville, VA, 24083, US","Carrington Place Wytheville":"990 Holston Rd, Wytheville, VA, 24382, US","Carrington Place Wytheville ALF":"990 Holston Rd, Wytheville, VA, 24382, US","Carrollton Manor":"205 Fifth Street, Carrolton, Kentucky, 41008, US","Carrollton of Lumberton":"1170 LINKHAW RD, Lumberton, North Carolina, 28358, US","Carrolton":"2500 Iowa Ave, Connersville, IN, 47331, US","Carrolton of Fayetteville":"2461 Legion Road , Fayetteville , North Carolina, 28306, US","Carrolton of Nash":"7369 Hunter Hill Road, Rocky Mount, NC, 27804, US","Carrolton of Plymouth":"1084 US Hwy 64 East, PLYMOUTH, North Carolina, 27962, US","Carrolton of Williamston":"119 Gatling Street, Williamston, North Carolina, 27892, US","Carteret House":"3020 Market St, Newport, North Carolina, 28570, US","Carver Living Center":"321 East Carver St, Durham, North Carolina, 27704, US","Castleton Health Care Center":"7630 E 86TH ST, Indianapolis, Indiana, 46256, US","Cedar Creek Of Fort Wayne":"2116 BUTLER RD, Fort Wayne, Indiana, 46808, US","Cedar Creek of Bloomington":"2770 S ADAMS ROAD, BLOOMINGTON, Indiana, 47403, US","Cedar Creek of Logansport (Formerly McKinney Place)":"3901 High Street, Logansport, Indiana, 46947, US","Cedar Creek of Warsaw":"425 CHINWORTH COURT, WARSAW, Indiana, 46580, US","Cedar Hurst Living of Marion":"725 WEST 50TH STREET, MARION, Indiana, 46953, US","Cedar Mountain House":"11 SHERWOOD RIDGE RD, BREVARD, North Carolina, 28712, US","Cedar Ridge IN":"2680 S. Mebane St, Burlington, North Carolina, 27215, US","Cedarbrook":"1267 Pinnacle Church Rd, Nebo, North Carolina, 28761, US","Cedarhurst of Beaumont":"1165 Monarch St, Lexington, KY, 40513, US","Cedarhurst of Bloomington":"3203 E MOORES PIKE, BLOOMINGTON, Indiana, 47401, US","Cedarhurst of Nicholasville":"1600 Nicholasville Bypass, Nicholasville, KY, 40356, US","Cedarvale Rehab":"375 Glenn Ave, Washington Court House, OH, 43160, US","Celebrate Senior Living Fort Wayne":"3420 E State Blvd, Fort Wayne, Indiana, 46805, US","Celina Manor":"1001 MYERS ROAD, CELINA, Ohio, 45822, US","Centerville Health and Rehab":"7300 McEwen Rd, Dayton, OH, 45459, US","Centerville Place Assisted Living":"7415 Liberty Woods Lane, Dayton, OH, 45459, US","Central Care":"139 Apex Ln, Mount Airy, NC, 27030, US","Central Continuing Care":"1287 Newsome St, Mount Airy, NC, 27030, US","Century Villa Health":"705 N MERIDIAN ST, GREENTOWN, Indiana, 46936, US","Chamberlin Healthcare Center":"3889 E Galbraith Rd, Cincinnati, Ohio, 45236, US","Chandler Place":"2879 S LIMA ROAD, KENDALLVILLE, Indiana, 46755, US","Chapman Place - Harbours":"3110 E. COLISEUM BLVD, Fort Wayne, Indiana, 46805, US","Charlestown Place at New Albany":"4915 CHARLESTOWN RD, NEW ALBANY, Indiana, 47150, US","Charter Senior Living of Bowling Green":"445 Middle Bridge Road W, Bowling Green, KY, 42103, US","Charter Senior Living of Charlotte - AL":"3610 RANDOLPH RD, Charlotte, North Carolina, 28211, US","Charter Senior Living of Charlotte - MC":"3610 RANDOLPH RD, Charlotte, North Carolina, 28211, US","Charter Senior Living of Hopkinsville":"1595 Marie Dr, Hopkinsville, KY, 42240, US","Chateau Rehabilitation - (Sig-Ft Wayne)":"6006 Brandy Chase Cove, Fort Wayne, Indiana, 46815, US","Chatham Health & Rehab of VA":"100 Rorer Road, Chatham, VA, 24531, US","Chatham Nursing & Rehab of NC":"700 Johnson Ridge Rd, Elkin, NC, 28621, US","Chatham Nursing and Rehabilitation":"700 Johnson Ridge Rd, Elkin, North Carolina, 28621, US","Chatham Ridge AL":"114 Polks Village Lane, Chapel Hill, North Carolina, 27517, US","Chatham Ridge MC":"114 Polks Village Lane, Chapel Hill, North Carolina, 27517, US","Chautauqua Health and Rehab":"1205 LEITCHFIELD RD, OWENSBORO, Kentucky, 42303, US","Cheraw Healthcare":"400 Moffat Road, Cheraw, South Carolina, 29520, US","Cherry Point Bay Nursing and Rehab Center":"110 MCCOTTER BLVD, HAVELOCK, North Carolina, 28532, US","Cherry Springs Village":"358 Clear Creek Road, Hendersonville, North Carolina, 28792, US","Chesterton Manor":"110 Beverly Drive, Chesterton, IN, 46304, US","Chestnut Ridge":"1015 Magazine Street, Louisville, KY, 40203, US","Chowan River Nursing and Rehab Center":"1341 Paradise Rd, Edenton, North Carolina, 27932, US","Christian County Manor":"2820 Richard St, Hopkinsville, KY, 42240, US","Christian Heights Nursing and Rehab":"124 W Nashville St, Pembroke, Kentucky, 42266, US","Christina Place - AL":"1435 Christian Blvd, FRANKLIN, Indiana, 46131, US","Chunn's Cove":"67 Mountainbrook Rd, Asheville, North Carolina, 28805, US","Clairbridge Brookdale Lawndale 2":"4400 LAWNDALE DRIVE, Greensboro, North Carolina, 27455, US","Clara Manor":"1218 PAMLICO ST, Washington, North Carolina, 27889, US","Clark Rehab":"517 N LITTLE LEAGUE BLVD, Clarksville, Indiana, 47129, US","Clarksville Health & Rehab":"184 Buffalo Road, Clarksville, VA, 23927, US","Clayton House":"145 Dairy Rd, Clayton, North Carolina, 27520, US","Clear Creek Nursing and Rehabilitation Center":"10506 Clear Creek Commerce Drive, Mint Hill, North Carolina, 28227, US","Clegail Professional Services":"205 E. Sixth Street, Burlington, North Carolina, 27215, US","Clemmons Village I":"6401 Holder Rd, Clemmons, North Carolina, 27012, US","Clemmons Village II":"6441 Holder Rd, Clemmons, North Carolina, 27012, US","Cleveland House":"950 Hardin Rd., Shelby, North Carolina, 28150, US","Clifton Care Center":"625 PROBASCO ST, CINCINNATI, Ohio, 45220, US","Clifton Oaks Care Center":"446 Mt Holly Ave., Louisville, Kentucky, 40206, US","Clinton County Care and Rehab":"404 N WASHINGTON ST, ALBANY, Kentucky, 42602, US","Clinton House Rehab & HCC":"809 W FREEMAN ST, FRANKFORT, Indiana, 46041, US","Close to Home":"503 Verson Street, Ironton, Ohio, 45638, US","Clovernook Healthcare Pavilion":"7025 CLOVERNOOK AVE, CINCINNATI, Ohio, 45231, US","Colonial Care":"340 Snowhill Dr, Mount Airy, NC, 27030, US","Colonial House of Shepherdsville":"1516 HIGHWAY 44 E, SHEPHERDSVLLE, Kentucky, 40165, US","Colonial Manor":"920 Henery Clay Street, Shelbyville, Kentucky, 40065, US","Colonial Manor Health Care":"160 Health Care Dr, rutherfordton, North Carolina, 28139, US","Colonial Nursing and Rehabilitation":"119 N Indiana Ave, Crown Point, Indiana, 46307, US","Columbus Healthcare":"4301 CLIME ROAD NORTH, COLUMBUS, Ohio, 43228, US","Commonwealth Abingdon":"860 Wolf Creek Trail, Abingdon, VA, 24210, US","Commonwealth Cedar Bluff":"500 Clinic Rd, Cedar Bluff, VA, 24609, US","Commonwealth Charlottesville":"1550 Pantops Mountain Plc., Charlottesville, VA , 22911, US","Commonwealth Christiansburg":"201 Wheatland Ct NE, Christiansburg, VA, 24073, US","Commonwealth Hillsville":"100 Kyle Drive, Hillsville, VA, 24343, US","Commonwealth Radford":"7486 Lee Hwy, Radford, VA, 24141, US","Commonwealth South Boston":"435 Hamilton Blvd, South Boston, VA, 24592, US","Commonwealth Stratford House":"1111 Main St, Danville, VA, 24541, US","Community Nursing and Rehab":"5600 E 16th St, Indianapolis, Indiana, 46218, US","Compass Healthcare and Rehab Hawfields, Inc":"2502 South NC HWY 119, Mebane, North Carolina, 27302, US","Compass Healthcare and Rehabilitation":"1401 South salisbury ave, Spencer, North Carolina, 28159, US","Compass Park Indiana Masonic Home":"690 S STATE ST, FRANKLIN, Indiana, 46131, US","Concord Care Center of Toledo":"3121 Glanzman Road, Toledo, Ohio, 43614, US","Concord Office":"101 Cabarrus Ave E, Concord, NC, 28025, US","Concord Place":"1501 Zion Church Rd East, Concord, North Carolina, 28025, US","Conover Nursing and Rehab":"920 4th St. SW, Conover, North Carolina, 28613, US","Consulate of Woodstock":"803 S Main St, Woodstock, VA, 22644, US","Continental Manor":"820 E CENTER STREET, BLANCHESTER, Ohio, 45107, US","Continuing Healthcare Solutions of Milan":"185 S Main St, Milan, Ohio, 44846, US","Continuing Healthcare of Milan":"185 S Main St, milan, Ohio, 44846, US","Copper Knoll Health and Rehab":"201 COURTHOUSE PARKWAY, Washington Court House, Ohio, 43160, US","Core of Bedford Nursing":"514 16TH STREET, BEDFORD, Indiana, 47421, US","Core of Dale Nursing and Rehab":"510 W MEDCALF ST, DALE, Indiana, 47523, US","Cornerstone Manor":"515 Water St, Scottsville, Kentucky, 42164, US","Cottonwood Villas":"800 West Church Street, Bishopville, South Carolina, 29010, US","Country Home":"2908 COUNTRY HOME RD, Concord, North Carolina, 28025, US","Country Time":"602 Brevard Road, Kings Mountain, Kings Mountain, NC, 28086, US","Countryside Meadows":"762 Dan Jones Rd, Avon, IN, 46123, US","Court House Manor":"555 N Glenn Ave, Washington Court House, Ohio, 43160, US","Court House Manor ALF":"555 N Glenn Ave, Washington Court House, Ohio, 43160, US","Courtland Terrace":"2300 Aberdeen Blvd, Gastonia, North Carolina, 28054, US","Courtyard of Wheelersburg":"900 PIRATE DRIVE, WHEELERSBURG, Ohio, 45694, US","Covenant Care":"600 Mt Moriah Church Rd, Lumberton, North Carolina, 28360, US","Coventry House Inn":"150 Coventry Drive, OXFORD, North Carolina, 27565, US","Coventry House of Siler City":"260 Village Lake Rd, Siler City, North Carolina, 27344, US","Coventry House of Zebulon":"1205 W. Gannon Ave, Zebulon, North Carolina, 27597, US","Coventry Meadows Assisted Living":"7843 W JEFFERSON BLVD, Fort Wayne, Indiana, 46804, US","Covered Bridge Health Campus":"1675 W TIPTON ST, SEYMOUR, Indiana, 47274, US","Creek Side":"1420 E Douglas Rd, Granger, Indiana, 46530, US","Creekwood Nursing and Rehabilitation":"107 Boyles Dr, , Russellville, Kentucky, 42276, US","Cresent Grove":"250 Masonic Home Drive, Louisville, KY, 40041, US","Crestwood Village - South - INDPLS":"8803 S MADISON AVE, Indianapolis, Indiana, 46227, US","Crittenden County Health and Rehab Center":"201 Watson St, Marion, Kentucky, 42064, US","Croasdaile Clinic":"2600 Croasdaile Farm Parkway, Durham, North Carolina, 27705, US","Croasdaile Friendship House":"2600 Croasdaile Farm Parkway, Durham, North Carolina, 27705, US","Croasdaile Village":"2600 Croasdaile Farm Parkwa, Durham, North Carolina, 27705, US","Croatan Ridge Rehabilitation & Nursing Center":"210 Foxhall Roa, Newport, North Carolina, 28570, US","Cross Road Retirement Community":"1302 Old Cox Rd, Asheboro, North Carolina, 27205, US","Crown Colony":"291 Commercial Drive, Moorseville, North Carolina, 28115, US","Crown Haven Health and Rehab":"620 Tom Hunter Road, Charlotte, NC, 28213, US","Crown Pointe Senior Living of Greensburg":"1034 E CROWN POINTE BLVD, GREENSBURG, Indiana, 47240, US","Crystal Bluffs Rehab & Health Care Center":"4010 BRIDGES ST, MOREHEAD CITY, North Carolina, 28557, US","Cumberland Manor":"1930 KY-90, Parkers Lake, KY 42634, Parkers Lake, Kentucky, 42634, US","Cumberland Valley Nursing & Rebhab":"301 S Main Street, Burkesville, KY, 42717, US","Currituck Health & Rehabilitation":"3907 Caratoke Hw, Barco, North Carolina, 27917, US","Currituck House":"141 Moyock Landing Dr., Moyock, North Carolina, 27958, US","Cypress Glen Retirement Community":"100 Hickory Street, GREENVILLE, North Carolina, 27858, US","Cypress Manor":"503 West Buncome Avenue, Roper, North Carolina, 27970, US","Danville Centre for Health and Rehab":"642 N 3RD ST, Danville, Kentucky, 40422, US","Danville Regional Rehab":"255 Meadow Dr, Danville, IN, 46122, US","Davco Personal Care Home":"2526 W 10th St, OWENSBORO, Kentucky, 42301, US","Davco in Owensborg TEMP LOCATION":"1030 Shive Lane , Bowling Green, KY, 42103, US","Dayspring Of Wallace":"4026 S NC HIGHWAY 11, Wallace, North Carolina, 28466, US","Deal Care":"1075 Deal Road, Mooresville, NC, 28115, US","Deal Care Inn":"1075 Deal Rd, MOORESVILLE, North Carolina, 28115, US","Deerfield Ridge":"287 Bamboo Road, Boone, NC, 28607, US","Dekalb Clinic":"3502 County Rd 31, Auburn, Indiana, 46806, US","Delhi Post Acute":"5999 BENDER ROAD, CINCINNATI, Ohio, 45233, US","Dishman Personal Care":"220 Worsham LN, Monticello, KY, 42633, US","Divine Rehabilitation and Nursing of Toledo":"1011 N Byrne Rd, Toledo, Ohio, 43607, US","Dogwood Crossing":"130 Deer Trail Road, Tazewell, VA, 24651, US","Dominion Senior Living of Florence":"4009 SELIGMAN DRIVE, FLORENCE, Kentucky, 41042, US","Dominion Senior Living of Frankfort":"122 LEONARDWOOD DRIVE, FRANKFORT, Kentucky, 40601, US","Dominion of Louisville":"6000 Hunting Rd., Louisville, Kentucky, 40222, US","Dominion/Richmond":"200 MERIDIAN WAY, RICHMOND, Kentucky, 40475, US","Dover Nursing and Rehab":"112 DOVER DR, Georgetown, Kentucky, 40324, US","Dujarie House":"54515 SR 933 N, NOTRE DAME, Indiana, 46556, US","Dunmore Senior Living":"200 Coventry Dr, Oxford, NC, 27565, US","Durham Nursing & Rehab Center":"411 South Lasalle Street, Durham, North Carolina, 27705, US","Durham Ridge":"3420 Wake Forest Hwy, Durham, North Carolina, 27703, US","Eagle Valley Meadows":"3017 Valley Farms Rd, Indianapolis, IN, 46214, US","Eagles Point":"901 West New Hope Road, Goldsboro, North Carolina, 27534, US","East Carolina Rehab and Wellness":"2575 W 5TH ST, Greenville, North Carolina, 27834, US","East Lake":"1900 JEANWOOD DRIVE, ELKHART, Indiana, 46514, US","East Towne":"4815 N Sharon Amity Rd, Charlotte, NC, 28205, US","East Towne Assisted Living":"4815 N SHARON AMITY RD, Charlotte, North Carolina, 28205, US","Easterseals ARC/NE Indiana":"4919 COLDWATER ROAD, Fort Wayne, Indiana, 46825, US","Eastgate Manor":"2119 E National Highway, Washington, IN, 47501, US","Eastover Nursing Center":"2616 E 5th Street, Charlotte, North Carolina, 28204, US","Eastway":"1155 Eastern Parkway, Louisville, KY, 40217, US","Eden Spring":"3812 Booker Ave, Durham, North Carolina, 27713, US","Edgecombe Health and Rehabilitation Center":"1000 Western Blvd, Tarboro, North Carolina, 27886, US","Edgemont Healthcare":"323 Webster Ave, Cynthiana, kY, 41031, US","Edgewater Woods":"1809 N MADISON AVE, ANDERSON, Indiana, 46011, US","Edgewood Manor of Greenfield":"850 Nellie St, Greenfield, Ohio, 45123, US","Edgewood Manor of Lucasville I":"10098 Big Bear Creek Road, Lucasville, Ohio, 45648, US","Edgewood Manor of Lucasville II":"10098A Big Bear Creek Rd, Lucasville, Ohio, 45648, US","Edgewood Manor of Wellston - AL":"405 N Park Ave, Wellston, OH 45692, Wellston, Ohio, 45692, US","Edgewood Manor of Wellston -SNF":"405 N Park Ave, Wellston, OH 45692, Wellston, Ohio, 45692, US","Elderwood Rehab":"2715 South Island Road, Georgetown, SC, 29440, US","Elizabeth City Health & Rehabilitation Center":"1075 US Highway 17 Sout, Elizabeth City, North Carolina, 27909, US","Elizabethan Gardens Assisted Living":"1812 New Town Rd, Monroe, North Carolina, 28110, US","Elizabethtown Nursing and Rehab Center":"1101 Woodland Dr #2749, Elizabethtown, Kentucky, 42701, US","Elkhart Meadows":"2600 MOREHOUSE AVE, ELKHART, Indiana, 46517, US","Elkhart Place":"2024 County Road 24, Elkhart, Indiana, 46517, US","Elliott Nursing and Rehab":"20 Howard Creek Road, Sandy Hook, KY, 41171, US","Elms at Abbotswood":"3508 Flint Street, Greensboro, North Carolina, 27405, US","Elms at Michigan City":"4300 Cleveland Ave, Michigan City, IN, 46360, US","Elwood ALF":"2300 PARKVIEW LN, ELWOOD, Indiana, 46036, US","Elwood SNF":"2300 PARKVIEW LN, ELWOOD, Indiana, 46036, US","Embassy Pickerington":"1300 Hill Road N, Pickerington, OH, 43147, US","Embassy of Lebanon":"700 Monroe Rd, LEBANON, Ohio, 45036, US","Embassy of Valley View":"3363 Ragged Ridge Rd,, Frankfort, Ohio, 45628, US","Enclave of Springboro":"355 WEST CENTRAL AVENUE, SPRINGBORO, Ohio, 45066, US","Englewood Health & Rehabilitation Center - Fort Wayne":"2237 Engle Road, Fort Wayne, Indiana, 46809, US","Englewood Health and Rehab - Englewood":"425 Lauricella Court, Englewood, OH, 45322, US","English Meadows Blacksburg":"3400 S Point Dr, Blacksburg, VA, 24060, US","English Meadows Fisherville":"25 OldOaks Drive, Staunton, VA, 24401, US","English Meadows at Preston Lake":"3607 Stone Spring Road, Harrisonburg, VA, 22801, US","English Meadows harrisonburg":"3607 Stone Spring Rd, Harrisonburg, VA, 22801, US"},"empAddr":{"Aaliyah Bates":"202 Warren Avenue, Lynchburg,VA, 24501","Aaron Charles":"1097 Emmett Pl, Hardy, VA 24101","Abbas Smiley":"7321 Aspect Drive, Granger,IN, 46530","Abbey Hess":"3176 S Cave Hill Road, IN, 47042,US","Abigail Johnson":"2914 Detford Court, Lebanon,In, 46052","Abigail Noe":"146 Swords St, Lebanon,VA, 24266","Abraham Kuranga":"265 Elm Ave, Cincinnati,Ohio, 45215","Adaobi O'Gonuwe":"3405 Violet Lane, IN, 46311,US","Adaora Nnadike":"4510 Stonewall Drive, Raleigh,NC, 27604","Adrianne Melton":"107 Ivanhoe Drive, NC, 28778,US","Adrienne Holloway":"170 Larkington Dr, Siler City,NC, 27344","Agatha Marsh":"2106 Mckelvey Drive, Greensboro,NC, 27406","Ahsan Afzal":"23646 Sailfish Square, Ashburn,VA, 20148","Akelia Hollingsworth-Roper":"921 Johnson St, Raeford,NC, 28376","Alex Liopo":"117 Thompson St, Mcarthur,OH, 45651","Alexandra Perris":"2700 Himelrigh Blvd, OH, 44302,US","Ali Bennett":"2925 Deep Glen Court, Raleigh,NC, 27603","Alicia Crisp":"141 Krammerer Drive, Statesville,NC, 28625","Alicia Lacombe":"4830 Smith Creek Parkway, Raleigh,NC, 27612","Alicia Mathew":"125 Durham Springs Church Rd, Scottsville,KY, 42164","Alicia Williams":"2435 Eastland Dr, Owensboro,KY, 42303","Alina L. Smith":"7035 Montroff Cir, Indianapolis,IN, 46256","Aliyah Gresham":"2400 Andrew Ave Apt 408, Laporte,IN, 46350","Allison Devaney":"2425 Beineke Drive, Fort Wayne,In, 46808","Allison Konen":"1212 Tishoff Dr, Lexington,Ky, 40502","Allison Phillips":"1990 State Route 1379, Central City,KY, 42330","Allison Tupper":"13052 E Newton Dr, Solsberry,IN, 47459","Alysen Babey":"504 E Main Street, Rock Hill,SC, 29730","Alyssa Deneen":"71 Wolfe Trace, New Albany,IN, 47150","Alyssa Huston":"289 Crawford Drive, Moneta,VA, 24121","Alyssa Koers":"401 E Tecumseh Drive, IN, 47429,US","Alyssa Walton":"200 Curry Pike, Harrodsburg,KY, 40330","Amanda Batson":"3075 Moores Bridge Road, Rose Hill,NC, 28458","Amanda Bazan":"213 Pennsylvania Street, Shirley,IN, 47384","Amanda Bentley":"6402 Millers Run Back Run Rd, Lucasville,Ohio, 45648","Amanda Carnes":"6726 E Sparta Ave SE, East Sparta,OH, 44626","Amanda Koehl":"2451 N 400 West, Crawfordsville,IN, 47933","Amanda Lewis":"2808 Locust Ct, West Kokomo,IN, 46902","Amanda Perzel":"30 Edwards Ave, Florence,KY, 41042","Amanda Poe":"51 Bellefonte Road, Raceland,KY, 41169","Amanda Stagg":"804 Hess Ave, Evansville,IN, 47712","Amanda Summers":"325 Wyndhurst Dr, Lynchburg, VA 24502","Amanda Wiley":"4570 Elmburg Road, Bagdad,KY, 40003","Amanda Wilkins":"1084 Lennig Road, VA, 24577,US","Amber Banks":"4210 N Wilshire Dr, Marion,IN, 46952","Amber Comparet":"5513 Council Ring Blvd, Kokomo,IN, 46902","Amber Eddy":"926 Sibley Rd, Lumberton,NC, 28358","Amber G Griffith":"236 Carl Wade Rd , Princeton,WV, 24740","Amber Hyland":"5369 Pioneer Trail, OH, 44255,US","Amber Riggsby":"3845 Germany Lane, Dayton,OH, 45431","Ameedat Adedokun":"6253 Card Boulevard, Indianapolis,IN, 46221","Amy Bramblett-Robinson":"206 Tims Orchard Road, Troutville,VA, 24175","Amyah Chatman":"4769 Derby Cirle, Berrien Springs,MI, 49103","Andrea Baker":"18910 Brocks Gap Rd, Bergton, VA 22811","Andrea Kiss":"337 Keepsake Drive, NC, 28412,US","Andrea Lumson":"850 Washburn Ave Apt 310, Louisville,KY, 40222","Anessa DeLeon":"604 Stanton Drive, Waxhaw,NC, 28173","Angel Tumbleston":"921 Vivian Road, Pamplico,SC, 29583","Angela Bryant":"1905 Old Batten Rd, Selma,NC, 27576","Angela Carter":"13987 Elkin Hwy, Rhonda,NC, 28670","Angela Penix":"1298 Edwards Dr, Lucasville,Ohio, 45648","Angela Shearer":"275 Lake Forest Dr, Lynchburg, VA 24502","Angela Smith":"3829 Keever Pass, Lebanon,OH, 45036","Angelia Adcock":"68 New Hope and Crimora Rd, Waynesboro,VA, 22980","Angelica Staggers":"602 Valley Dale Street, Wilson,NC, 27893","Aniekan Affiah":"2288 Fletchers Ridge Drive, Durham,NC, 27703","Ann-Marie Hutchinson":"430 Coville Street, Middleton,VA, 26646","Annaka Hoffman":"1167 Turkey Foot Rd Apt 16, Lexington,KY, 40502","Annie Adamczyk":"9554 Airlane Drive, Macedonia,Ohio, 44056","Anntoinette F Davis":"3313 North Bend Unit 1, Cincinnati,Ohio, 45239","Anthony Abdullah":"5112 Griffis Lake Drive, Hamilton,Ohio, 45011","Anthony Harris":"4117 Whichard Road, Greenville,NC, 27834","April Bull":"1136 Fox Trot Drive, Hartsville,SC, 29550","April R Smith":"2704 North Belmont Dr, Muncie,IN, 47304","Arabia Johnson":"1507 Penny Drive, Elizabeth City,NC, 27909","Aretha Bowling-Cecil":"1032 Diamond Brook Drive, KY, 40475,US","Arion Norman":"2437 County Home Rd Apt 71, Greenville,NC, 27858","Arthur (Ford) Raine":"2605 Cardinals Perch Lan, Wendell,NC, 27591","Ashi Hairston":"3040 Bluebird Ln Apt 303, Mebane,NC, 27302","Ashleigh Perkins":"2306 Cross Point Circle Apt 306-27, Matthews,NC, 28105","Ashley Carpenter":"42665 Creed Rd, Albermarle,NC, 28001","Ashley Cupp":"150 Ash Drive, Christiansburg, VA 24073","Ashley Means":"103 Christopher Dr, Hebron,Ohio, 43025","Ashley Minton":"4913 Honey Branch Rd, Saint Paul,VA, 24283","Ashley Murray":"45 Valeria Drive, Bunn,NC, 27508","Ashley Ramey":"3493 County Rd 115, Chesapeake,OH, 45619","Ashley Singleton":"331 Stone Branch Rd, Staunton,VA, 24401","Ashley Sloan":"1398 Whetstone Dr, Greenfield,IN, 46140","Ashley Stinnett":"20 Hillandale Drive, Staunton,VA, 24401","Ashley Thrush":"903 County Road 60, IN, 46738,US","Ashlyn J Anderson":"5694 NC Highway 71 N, Maxton,NC, 28364","Assata Smith":"4119 Long Arrow Road, NC, 28025,US","Audrey Mcleod":"1830 Scholar Circle, Raleigh,NC, 27606","Barbara Frost":"906 Westview Dr, Lynchburg,VA, 24502","Barbara Frye":"3387 Mesinetto Creek Dr, Rockingham, VA 22801","Barbara Pereira":"46 Southwind Way, Dartmouth, MA 02747","Barton Spurlin":"6166 Plano Road, Bowling Green,KY, 42104","Becky Born":"330 Starling Lane, Autryville,NC, 28318","Becky Lawless":"5815 Quail Rd, Brodhead,KY, 40409","Becky Yancey":"829 S Summerhaven Court, New Palestine,IN, 46163","Bernice Clark":"1133 O'Brien Street, IN, 46628,US","Bernice Ewing":"3302 Beatrice Drive, Fort Wayne,IN, 46806","Bethany Cope":"77 Highland Ridge Drive, Waynesville,NC, 28785","Bethany France":"15486 Lee Hwy , Bristol,VA, 24201","Bethany Rife":"303 Wiley St, Abingdon,VA, 24210","Betsy Harrison":"11108 Shady Hollow Dr, Louisville,KY, 40241","Bianca Conner":"1430 Deer Forest Dr, Indian Land,SC, 29707","Bianca highsmith-Propst":"221 Chesterton Way Apt 1, Winston Salem,NC, 27104","Bonnie Willoughby":"110 Clyde Circle, Lumberton,NC, 28358","Brad Mills":"12 Wood Rd, Arden,NC, 28704","Bradley Goad":"54 Watch Tower Dr, Moneta, VA 24121","Bradley Goad, Jr":"54 Watchtower Dr, Moneta, VA 24121","Bradley J Goad":"54 Watch Tower Dr, Moneta, VA 24121","Brahlyn Ivery":"351 South Kingston Dr Apt 3225 Unit 408, Bloomington,IN, 47401","Branda Pounds":"1206 Mason Chapel Rd, Alton, VA 24520","Brandi Burke":"516 Warlick Meadow Court, Clover,SC, 29710","Brandi Monroe":"281 Central Ridge Road, Mount Olivet,KY, 41065","Brandi Tolbert":"428 Twin Forks Ln, Woodlawn, VA 24381","Brandie Jacobs":"9899 US Highway 301 N, Lumberton,NC, 28360","Brandon Emry":"6295 Melan Cove, IN, 46835,US","Brandy Robertson":"18359 Clairmont Dr, South Bend,IN, 46637","BreAnna Yarnell":"2479 Gano Rd, Wilmington,Ohio, 45177","Brea Butler":"103 Tanner Ct, NC, 27886,US","Breanna Banter":"2801 S Stone Road, Marion,IN, 46953","Breanna Hannah":"235 Branch Drive, Dobson,NC, 27017","Breanna Ring":"684 Aria Lane, Hubert,NC, 28539","Bren Hipp":"720 North Central Avenue, Locust,NC, 28097","Brenda Baldridge":"19 Lewis Lilly Road, Ironton,OH, 45638","Brenda Goetz":"5812 Waveland Circle, Prospect,KY, 40059","Breona McKinney":"110 Franklin Farm Lane, Benson,NC, 27504","Bria Coles":"120 Walleye Lane, Troutman,NC, 28166","Brittany Bowling":"11817 Laurel Grove Ln, Charlotte,NC, 28226","Brittany Chambers":"75 Denise Drive, Burlington,NC, 27215","Brittany Hodge":"9312 NC HWY 67 , East Bend,NC, 27018","Brittany Huwig":"367 Tratebas Road, Valparaiso,IN, 46383","Brittany Morgan":"179 Bedrock Court, Lexington,NC, 27295","Brittany Sutphin":"1275 Fagg Rd, Walnut Cove,NC, 27052","Brittany Ward":"141 Alberta Inn, KY, 42345,US","Brooke Ventura":"1370 Upriver Road, Elizabeth City,NC, 27909","Brooklin Canady":"1005 N East Street, Greensburg,IN, 47240","Bruce Lobitz":"732 Southlake Rd, Columbia,SC, 29223","Bryson Kennedy":"3915 Ayscough Rd, Charlotte,NC, 28211","Byron Lawrence":"313 Ashdown Forest Lane, Cary,NC, 27519","Camilla Wallace":"5149 W Hanks Xing, Bloomington,IN, 47403","Candace Young":"259 Kenny lane, Martinsville, VA 24112","Candice Hite":"4403 Sunset Circle, Louisville,KY, 40216","Candice Staton":"118 W Jackson St, Goshen,IN, 46526","Candis Nolletti":"1639 Township Road 65, Jeromesville,OH, 44840","Caressa Richardson":"7222 Applecross Lane, Charlotte,NC, 28215","Carla Bolton":"2813 Eastover North Dr, Fayetteville,NC, 28312","Carla Stanley":"5037 Hill Haven Rd, Jonesville,NC, 28642","Carmella Foley":"140 Broome Farm Lane, Mooresville,NC, 28115","Caroline Chisholm":"1050 Crowell Gap Rd, Boones Mill,VA, 24065","Carrie Nelson":"886 W Lakeview Drive, Nineveh,IN, 46164","Carrie Worthington":"302 W Kendall St, LA Fontaine,IN, 46940","Cassandra Collins":"192 Levisa Drive, Louisa,KY, 41230","Cassandra Ratliff":"211 Beechwood Circle, Warsaw,KY, 41095","Cassey VanMeter":"5828 S Meridian Road, IN, 47660,US","Catherine Hamilton":"10568 Cat Crossing Lane, Dillsboro,IN, 47018","Cathryn Jenkins":"1283 Clarawill Dr, Loveland,OH, 45140","Cecilia Gichaba":"8346 Westcliffe Dr, Avon,In, 46123","Chailendra Perry":"8048 Remington Heights Drive, Raleigh,NC, 27616","Chante Clifton":"3966 Caitlin Drive, Battleboro,NC, 27809","Charlene Knight":"154 South Harbor Watch Drive, Statesville,NC, 28677","Charles \"Chuck\" Dugan":"4200 High Peak Mountain Road, Valdese,NC, 28690","Charmaya Hines":"100 Flintwood Court, Winston Salem,NC, 27106","Chelsea Shoots":"4120 Stone Pl, New Albany,IN, 47150","Chelsea Slagle":"12 Tulipwood LN, Lexington,VA, 24450","Chelsey Burnette":"760 Estates Rd SE, Roanoke, VA 24014","Chendra Dikko":"3655 Shorewood Drive, Amelia,OH, 45102","Cheri Garvin":"2212 Gerald Court, Louisville,KY, 40218","Chery Zheng":"704 Voyager Place, NC, 27712,US","Cheryl Davis-Land":"10443 Trewithen Lane, Carmel,IN, 46032","Cheryl Mistry":"10223 Tirian Place, Fort Wayne,IN, 46835","Cheyenne Crabtree":"1550 Dogwood Drive, Oxford,NC, 27565","Chicquita Ward":"2134 Braselton Dr, Winterville,NC, 28590","China Gregory":"510 N Wilmington St Apt 426, Raleigh,NC, 27604","Chrissy Lanham":"777 Golf View Drive, Milan,In, 47031","Chrissy Turner":"4561 Willman Way, Lexington,KY, 40509","Christiana Bredeweg":"28 Tipperary Drive, Asheville,NC, 28806","Christina Haynes":"561 Jeanette Street, OH, 44212,US","Christina Sigman":"2265 May Street, Syracuse,Ohio, 45779","Christine Hart":"917 Moravia St, Winston Salem,NC, 27107","Christy Andrews":"593 Frogtown Ln, Edinburg, VA 22824","Christy Whitenight":"2076 State Route 1379, Central City,KY, 42330","Ciera Day":"105 S Fort Wayne Rd , Milroy,IN, 46156","Ciera Karnes":"11530 Karnes Road, Hillsboro,Ohio, 45133","Cierra Harp":"696 Johnson Town Rd, Zebulon,NC, 27597","Cindy Comer":"324 Grace St, Mount Airy, NC 27030","Codie Dowell":"3257 East 400, South Tipton,IN, 46072","Cody Knisley":"48 Thornberry Rd, Hendersonville,NC, 28792","Colleen Conner":"115 Elm St, Morganton,NC, 28655","Connie Getsinger":"105 Jones Farm Rd, New Bern,NC, 28560","Connie Maddox":"7112 O'Connell Pl, Union,KY, 41091","Cortney Wilcox":"3314 Somers Dr, Kokomo,IN, 46902","Courtney Bloomfield":"130 Briggs Rd Unit B, Wheelersburg,Ohio, 45694","Courtney Catron":"146 Mallard Circle, KY, 42503,US","Courtney Coleman":"105 Rockefeller Ct, Goldsboro,NC, 27530","Courtney Hill":"193 Carl's Woods Rd, Pinetown,NC, 27865","Courtney Lambert":"3505 Dusty Lane, Hopkinsville,KY, 42240"}};
+
+let employees = [];
+let customFacs = {};   // {name: address}  — user-imported/added facilities
+let snapshots  = {};   // {empId: [{id,label,date,tc,tm,data}]}
+let apiKey     = DEFAULT_KEY;
+
+// Paging state
+const PAGE = 50;
+let empPage = 0, facPage = 0;
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+window.onload = () => {
+  const sk = localStorage.getItem('fc_apikey');
+  apiKey = sk || DEFAULT_KEY;
+  document.getElementById('apiKey').value = apiKey;
+  updateApiStatus();
+  try { snapshots   = JSON.parse(localStorage.getItem('fc_snaps')  || '{}'); } catch(e){}
+  try { customFacs  = JSON.parse(localStorage.getItem('fc_facs')   || '{}'); } catch(e){}
+  const sd = localStorage.getItem('fc_emps');
+  if (sd) { try { employees = JSON.parse(sd); } catch(e){} }
+  if (!employees.length) employees = SEED.employees.map(e=>({...e,open:false}));
+  renderCalc();
+};
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function defTrip(){ return {id:uid(),stops:[{fac:'',addr:''}],legs:['',''],roundTrip:'',qualifying:'',freq:'',rate:'0.21',totalMiles:'',totalCost:''}; }
+
+function save(){
+  localStorage.setItem('fc_emps', JSON.stringify(employees));
+  updateSummary();
+}
+function saveFacs(){ localStorage.setItem('fc_facs', JSON.stringify(customFacs)); }
+
+// ══════════════════════════════════════════════════════
+//  ALL FACILITIES (seed + custom)
+// ══════════════════════════════════════════════════════
+function allFacNames(){ return [...new Set([...SEED.facNames, ...Object.keys(customFacs)])].sort(); }
+function getFacAddr(n){ return customFacs[n] || SEED.facAddr[n] || ''; }
+
+// ══════════════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════════════
+function T(name){
+  const tabs=['calc','emps','facs','import','history','settings'];
+  document.querySelectorAll('.tb').forEach((b,i)=>b.classList.toggle('active',tabs[i]===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='history')  renderHist();
+  if(name==='emps')     { empPage=0; renderEmpTab(); }
+  if(name==='facs')     { facPage=0; renderFacTab(); }
+}
+
+// ══════════════════════════════════════════════════════
+//  AUTOCOMPLETE
+// ══════════════════════════════════════════════════════
+let acIdx = -1;
+function attachAC(inp, type, onSel){
+  inp.setAttribute('autocomplete','off');
+  let wrap = inp.closest('.ac-wrap');
+  if(!wrap){ wrap=document.createElement('div'); wrap.className='ac-wrap'; inp.parentNode.insertBefore(wrap,inp); wrap.appendChild(inp); }
+  let box = wrap.querySelector('.ac-list');
+  if(!box){ box=document.createElement('div'); box.className='ac-list'; wrap.appendChild(box); }
+  inp.addEventListener('input',()=>{
+    const q=inp.value.trim().toLowerCase(); if(!q){ box.classList.remove('show'); return; }
+    const src = type==='fac' ? allFacNames() : Object.keys(SEED.empAddr);
+    const hits = src.filter(n=>n.toLowerCase().includes(q)).slice(0,14);
+    if(!hits.length){ box.classList.remove('show'); return; }
+    acIdx=-1;
+    box.innerHTML=hits.map(m=>{
+      const sub=type==='fac'?getFacAddr(m):(SEED.empAddr[m]||'');
+      return `<div class="ac-item" data-n="${esc(m)}" data-a="${esc(sub)}"><span>${esc(m)}</span><small>${esc(sub)}</small></div>`;
+    }).join('');
+    box.classList.add('show');
+    box.querySelectorAll('.ac-item').forEach(it=>it.addEventListener('mousedown',e=>{e.preventDefault();onSel(it.dataset.n,it.dataset.a);box.classList.remove('show');}));
+  });
+  inp.addEventListener('keydown',e=>{
+    const its=[...box.querySelectorAll('.ac-item')];
+    if(!its.length)return;
+    if(e.key==='ArrowDown'){e.preventDefault();acIdx=Math.min(acIdx+1,its.length-1);}
+    else if(e.key==='ArrowUp'){e.preventDefault();acIdx=Math.max(acIdx-1,0);}
+    else if(e.key==='Enter'&&acIdx>=0){e.preventDefault();its[acIdx].dispatchEvent(new MouseEvent('mousedown'));return;}
+    else if(e.key==='Escape'){box.classList.remove('show');}
+    its.forEach((it,i)=>it.classList.toggle('sel',i===acIdx));
+  });
+  document.addEventListener('click',e=>{if(!wrap.contains(e.target))box.classList.remove('show');},true);
+}
+
+// ══════════════════════════════════════════════════════
+//  RECALC
+// ══════════════════════════════════════════════════════
+function recalc(t){
+  const n=t.stops.length;
+  const g=parseFloat(t.legs[0])||0;
+  let mid=0; for(let i=1;i<n;i++) mid+=parseFloat(t.legs[i])||0;
+  const r=parseFloat(t.legs[n])||0;
+  const rt=g+mid+r, qual=Math.max(0,rt-32);
+  const fr=parseFloat(t.freq)||0, ra=parseFloat(t.rate)||0.21;
+  t.roundTrip=g?rt.toFixed(1):''; t.qualifying=g?qual.toFixed(1):'';
+  t.totalMiles=fr?(qual*fr).toFixed(1):''; t.totalCost=fr?(qual*fr*ra).toFixed(2):'';
+}
+function empTot(emp){
+  return{tc:emp.trips.reduce((s,t)=>s+(parseFloat(t.totalCost)||0),0),
+         tm:emp.trips.reduce((s,t)=>s+(parseFloat(t.totalMiles)||0),0)};
+}
+
+// ══════════════════════════════════════════════════════
+//  CALCULATOR RENDER
+// ══════════════════════════════════════════════════════
+function renderCalc(q=''){
+  const list=document.getElementById('calcList');
+  const sq=(q||document.getElementById('calcSearch')?.value||'').toLowerCase();
+  list.innerHTML='';
+  employees.filter(e=>!sq||e.name.toLowerCase().includes(sq)||(e.address||'').toLowerCase().includes(sq))
+    .forEach(emp=>{
+      const d=document.createElement('div'); d.className='emp-card'; d.id='ec_'+emp.id;
+      d.innerHTML=empHTML(emp); list.appendChild(d); attachEmpAC(emp);
+    });
+  updateSummary();
+}
+function ini(n){ return (n||'?').trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+
+function empHTML(emp){
+  const {tc,tm}=empTot(emp);
+  return `<div class="emp-hdr ${emp.open?'open':''}" onclick="toggleEmp('${emp.id}')">
+    <div class="emp-av">${ini(emp.name)}</div>
+    <div style="flex:1;min-width:0">
+      <div class="emp-name">${esc(emp.name)||'<em style="color:var(--muted);font-style:normal">New Employee</em>'}</div>
+      <div class="emp-addr">${esc(emp.address||'No address on file')}</div>
+      <div class="emp-meta">${emp.trips.length} route${emp.trips.length!==1?'s':''}</div>
+    </div>
+    <div class="emp-sum"><div class="emp-cost">${tc>0?'$'+tc.toFixed(2):'—'}</div><div class="emp-mi">${tm>0?tm.toFixed(0)+' mi/mo':'no data'}</div></div>
+    <span class="chev ${emp.open?'open':''}">▼</span>
+  </div>
+  <div class="emp-body ${emp.open?'open':''}" id="eb_${emp.id}">
+    <div class="frow">
+      <div class="fg" style="flex:1;min-width:160px"><label>Employee Name</label>
+        <div class="ac-wrap"><input type="text" id="en_${emp.id}" value="${esc(emp.name)}" placeholder="Full name" oninput="updEmp('${emp.id}','name',this.value)"></div></div>
+      <div class="fg" style="flex:2;min-width:240px"><label>Home Address</label>
+        <input type="text" id="ea_${emp.id}" value="${esc(emp.address)}" placeholder="123 Main St, City, State ZIP" oninput="updEmp('${emp.id}','address',this.value)"></div>
+    </div>
+    <div class="trips-lbl">TRIP ROUTES <span class="badge" style="background:var(--navy)">${emp.trips.length}</span></div>
+    <div id="tl_${emp.id}">${emp.trips.map((t,i)=>tripHTML(emp.id,t,i)).join('')}</div>
+    <div class="emp-bottom">
+      <button class="btn btn-ghost btn-sm" onclick="addTrip('${emp.id}')">＋ Add Route</button>
+      <button class="btn btn-pur btn-sm" onclick="calcAll('${emp.id}')">⚡ Calculate All</button>
+      <button class="btn btn-teal btn-sm" onclick="snapEmp('${emp.id}')">💾 Save Snapshot</button>
+      <button class="btn btn-del btn-sm" style="margin-left:auto" onclick="confirmDelEmp('${emp.id}')">✕ Remove</button>
+    </div>
+  </div>`;
+}
+
+function tripHTML(eId,t,idx){
+  const n=t.stops.length;
+  while(t.legs.length<n+1)t.legs.push('');
+  const stopsH=t.stops.map((s,si)=>`<div class="stop-row">
+    <div class="stop-n">${si+1}</div>
+    <div class="stop-fields">
+      <div class="fg" style="flex:2;min-width:130px"><label>Facility ${si+1}</label>
+        <div class="ac-wrap"><input type="text" id="sf_${t.id}_${si}" value="${esc(s.fac)}" placeholder="Facility name" oninput="updStop('${eId}','${t.id}',${si},'fac',this.value)"></div></div>
+      <div class="fg" style="flex:2;min-width:130px"><label>Address</label>
+        <input type="text" id="sa_${t.id}_${si}" value="${esc(s.addr)}" placeholder="Auto-filled or override" oninput="updStop('${eId}','${t.id}',${si},'addr',this.value)"></div>
+      ${n>1?`<button class="btn btn-del btn-sm" style="align-self:flex-end" onclick="remStop('${eId}','${t.id}',${si})">✕</button>`:''}
+    </div></div>`).join('');
+  const legLabels=['Home → Stop 1',...Array.from({length:n-1},(_,i)=>`Stop ${i+1} → Stop ${i+2}`),`Stop ${n} → Home`];
+  const legsH=legLabels.map((lb,li)=>`<div class="metric"><div class="m-lbl">${lb}</div>
+    <input type="number" step="0.1" id="lg_${t.id}_${li}" value="${t.legs[li]||''}" placeholder="—" oninput="updLeg('${eId}','${t.id}',${li},this.value)"></div>`).join('');
+  return `<div class="trip-card" id="tc_${t.id}">
+    <div class="trip-chdr">
+      <span class="trip-num">Route ${idx+1}</span>
+      <span class="trip-ctitle">${t.stops[0]?.fac?esc(t.stops[0].fac)+(n>1?' +'+(n-1)+' more':''):'No facility set'}</span>
+      ${n<10?`<button class="btn btn-ghost btn-sm" style="margin-left:auto;border-color:rgba(255,255,255,.3);color:#fff" onclick="addStop('${eId}','${t.id}')">＋ Stop</button>`:''}
+    </div>
+    <div class="trip-stops">${stopsH}</div>
+    <div class="trip-metrics">${legsH}
+      <div class="metric"><div class="m-lbl">Freq/Mo</div><input type="number" min="0" value="${t.freq}" placeholder="0" oninput="updTF('${eId}','${t.id}','freq',this.value)"></div>
+      <div class="metric"><div class="m-lbl">$/Mile</div><input type="number" step="0.01" value="${t.rate}" placeholder="0.21" oninput="updTF('${eId}','${t.id}','rate',this.value)"></div>
+      <div class="metric"><div class="m-lbl">Monthly Cost</div><div class="m-cost" id="mc_${t.id}">${t.totalCost?'$'+t.totalCost:'—'}</div></div>
+    </div>
+    <div class="trip-foot" id="tf_${t.id}">${footH(t)}</div>
+    <div class="trip-act">
+      <button id="cb_${eId}_${t.id}" class="btn btn-pur btn-sm" onclick="calcTrip('${eId}','${t.id}')">↯ Calculate Distances</button>
+      <button class="btn btn-del btn-sm" onclick="remTrip('${eId}','${t.id}')">✕ Remove Route</button>
+    </div>
+  </div>`;
+}
+function footH(t){
+  return `<span class="tf-lbl">Round Trip</span><span class="tf-val">${t.roundTrip||'—'} mi</span>
+  <span style="color:var(--bdr2);margin:0 6px">|</span>
+  <span class="tf-lbl">Qualifying (RT−32)</span><span class="tf-val">${t.qualifying||'—'} mi</span>
+  <span style="color:var(--bdr2);margin:0 6px">|</span>
+  <span class="tf-lbl">Qual. mi/mo</span><span class="tf-val">${t.totalMiles||'—'}</span>
+  <span class="tf-main">${t.totalCost?'$'+t.totalCost+'/mo':'—'}</span>`;
+}
+function updateSummary(){
+  const ec=employees.length, tc2=employees.reduce((s,e)=>s+e.trips.length,0);
+  const tm=employees.reduce((s,e)=>s+e.trips.reduce((ss,t)=>ss+(parseFloat(t.totalMiles)||0),0),0);
+  const tc=employees.reduce((s,e)=>s+e.trips.reduce((ss,t)=>ss+(parseFloat(t.totalCost)||0),0),0);
+  document.getElementById('sEmp').textContent=ec;
+  document.getElementById('sRoutes').textContent=tc2;
+  document.getElementById('sMiles').textContent=tm.toFixed(0);
+  document.getElementById('sCost').textContent='$'+tc.toFixed(2);
+  document.getElementById('calcBadge').textContent=ec;
+}
+function attachEmpAC(emp){
+  const ne=document.getElementById('en_'+emp.id);
+  if(ne) attachAC(ne,'emp',(n,a)=>{emp.name=n;if(a)emp.address=a;save();rerenderEmp(emp.id);});
+  emp.trips.forEach(trip=>trip.stops.forEach((stop,si)=>{
+    const fi=document.getElementById(`sf_${trip.id}_${si}`);
+    const ai=document.getElementById(`sa_${trip.id}_${si}`);
+    if(fi) attachAC(fi,'fac',(n,a)=>{stop.fac=n;if(a)stop.addr=a;if(ai)ai.value=stop.addr;fi.value=n;save();refreshFoot(emp.id,trip.id);});
+  }));
+}
+function rerenderEmp(id){
+  const emp=employees.find(e=>e.id===id);if(!emp)return;
+  const c=document.getElementById('ec_'+id);if(c){c.innerHTML=empHTML(emp);attachEmpAC(emp);}
+  updateSummary();
+}
+function toggleEmp(id){
+  const emp=employees.find(e=>e.id===id);if(!emp)return;
+  emp.open=!emp.open;
+  const c=document.getElementById('ec_'+id);
+  if(c){
+    c.querySelector('.emp-hdr').classList.toggle('open',emp.open);
+    c.querySelector('.emp-body').classList.toggle('open',emp.open);
+    c.querySelector('.chev').classList.toggle('open',emp.open);
+    if(emp.open) attachEmpAC(emp);
+  }
+  save();
+}
+function addEmployee(){
+  const e={id:uid(),name:'',address:'',open:true,trips:[defTrip()]};
+  employees.unshift(e); save(); renderCalc();
+  document.getElementById('calcList').scrollIntoView({behavior:'smooth'});
+}
+function confirmDelEmp(id){
+  const e=employees.find(x=>x.id===id);
+  showMo('Remove Employee',`Remove "${e?.name||'this employee'}" and all their routes?`,()=>{
+    employees=employees.filter(x=>x.id!==id); delete snapshots[id];
+    localStorage.setItem('fc_snaps',JSON.stringify(snapshots));
+    save(); renderCalc();
+  });
+}
+function updEmp(id,f,v){
+  const e=employees.find(x=>x.id===id);if(!e)return; e[f]=v; save();
+  const c=document.getElementById('ec_'+id);
+  if(c&&f==='name'){const el=c.querySelector('.emp-name');if(el)el.textContent=v||'New Employee';}
+  if(c&&f==='address'){const el=c.querySelector('.emp-addr');if(el)el.textContent=v||'No address on file';}
+}
+function addTrip(eId){const e=employees.find(x=>x.id===eId);if(e){e.trips.push(defTrip());save();rerenderEmp(eId);}}
+function remTrip(eId,tId){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  if(e.trips.length<=1){e.trips=[defTrip()];save();rerenderEmp(e.id);return;}
+  e.trips=e.trips.filter(t=>t.id!==tId);save();rerenderEmp(eId);
+}
+function addStop(eId,tId){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  const t=e.trips.find(x=>x.id===tId);if(!t)return;
+  if(t.stops.length>=10){toast('Max 10 stops.','warn');return;}
+  t.stops.push({fac:'',addr:''});t.legs.push('');save();rerenderEmp(eId);
+}
+function remStop(eId,tId,si){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  const t=e.trips.find(x=>x.id===tId);if(!t)return;
+  if(t.stops.length<=1){toast('At least one stop required.','warn');return;}
+  t.stops.splice(si,1);t.legs.splice(si,1);recalc(t);save();rerenderEmp(eId);
+}
+function updStop(eId,tId,si,f,v){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  const t=e.trips.find(x=>x.id===tId);if(!t)return;
+  t.stops[si][f]=v;save();
+}
+function updLeg(eId,tId,li,v){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  const t=e.trips.find(x=>x.id===tId);if(!t)return;
+  while(t.legs.length<=li)t.legs.push('');
+  t.legs[li]=v;recalc(t);save();refreshFoot(eId,tId);
+  const{tc,tm}=empTot(e);
+  const c=document.getElementById('ec_'+eId);
+  if(c){c.querySelector('.emp-cost').textContent=tc>0?'$'+tc.toFixed(2):'—';c.querySelector('.emp-mi').textContent=tm>0?tm.toFixed(0)+' mi/mo':'no data';}
+  updateSummary();
+}
+function updTF(eId,tId,f,v){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  const t=e.trips.find(x=>x.id===tId);if(!t)return;
+  t[f]=v;recalc(t);save();refreshFoot(eId,tId);updateSummary();
+}
+function refreshFoot(eId,tId){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  const t=e.trips.find(x=>x.id===tId);if(!t)return;
+  const f=document.getElementById('tf_'+tId);if(f)f.innerHTML=footH(t);
+  const mc=document.getElementById('mc_'+tId);if(mc)mc.textContent=t.totalCost?'$'+t.totalCost:'—';
+  const{tc,tm}=empTot(e);
+  const c=document.getElementById('ec_'+eId);
+  if(c){c.querySelector('.emp-cost').textContent=tc>0?'$'+tc.toFixed(2):'—';c.querySelector('.emp-mi').textContent=tm>0?tm.toFixed(0)+' mi/mo':'no data';}
+}
+
+// ══════════════════════════════════════════════════════
+//  EMPLOYEES TAB
+// ══════════════════════════════════════════════════════
+function renderEmpTab(){
+  const q=(document.getElementById('empTabSearch')?.value||'').toLowerCase();
+  const filtered=employees.filter(e=>!q||e.name.toLowerCase().includes(q)||(e.address||'').toLowerCase().includes(q));
+  const start=empPage*PAGE, slice=filtered.slice(start,start+PAGE);
+  document.getElementById('empTabCount').textContent=`${filtered.length} employees`;
+  const tbody=document.getElementById('empTbody');
+  tbody.innerHTML=slice.map((emp,i)=>{
+    const{tc}=empTot(emp);
+    return `<tr>
+      <td style="color:var(--muted2);font-size:12px">${start+i+1}</td>
+      <td><input class="dt-editable" value="${esc(emp.name)}" placeholder="Name" onchange="updEmpDirect('${emp.id}','name',this.value)"></td>
+      <td><input class="dt-editable" value="${esc(emp.address)}" placeholder="Address" onchange="updEmpDirect('${emp.id}','address',this.value)"></td>
+      <td style="text-align:center"><span class="badge" style="background:var(--navy)">${emp.trips.length}</span></td>
+      <td style="font-family:var(--mono);font-weight:700;color:var(--teal)">${tc>0?'$'+tc.toFixed(2):'—'}</td>
+      <td style="display:flex;gap:5px;padding:6px 12px;">
+        <button class="btn btn-out btn-sm" onclick="openEmpInCalc('${emp.id}')">Edit</button>
+        <button class="btn btn-del btn-sm" onclick="confirmDelEmp('${emp.id}');T('emps')">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+  renderPager('empPager', empPage, filtered.length, ()=>{empPage++;renderEmpTab();}, ()=>{empPage--;renderEmpTab();}, n=>{empPage=n;renderEmpTab();});
+}
+function updEmpDirect(id,f,v){
+  const e=employees.find(x=>x.id===id);if(e){e[f]=v;save();}
+  // Also update in calc list if rendered
+  const c=document.getElementById('ec_'+id);
+  if(c&&f==='name'){const el=c.querySelector('.emp-name');if(el)el.textContent=v;}
+  if(c&&f==='address'){const el=c.querySelector('.emp-addr');if(el)el.textContent=v;}
+}
+function openEmpInCalc(id){
+  const e=employees.find(x=>x.id===id);if(e)e.open=true;
+  save();renderCalc();T('calc');
+  setTimeout(()=>{const c=document.getElementById('ec_'+id);if(c)c.scrollIntoView({behavior:'smooth',block:'start'});},200);
+}
+function exportEmpCSV(){
+  const rows=[['Employee Name','Home Address','Routes','Total $/Mo']];
+  employees.forEach(e=>{const{tc}=empTot(e);rows.push([e.name,e.address,e.trips.length,tc.toFixed(2)]);});
+  dlCSV(rows,'eventus_employees_'+ds()+'.csv');toast('Employees exported','ok');
+}
+
+// ══════════════════════════════════════════════════════
+//  FACILITIES TAB
+// ══════════════════════════════════════════════════════
+function renderFacTab(){
+  const q=(document.getElementById('facTabSearch')?.value||'').toLowerCase();
+  const all=[
+    ...SEED.facNames.map(n=>({name:n,addr:SEED.facAddr[n]||'',custom:false})),
+    ...Object.entries(customFacs).filter(([n])=>!SEED.facAddr[n]).map(([n,a])=>({name:n,addr:a,custom:true}))
+  ].sort((a,b)=>a.name.localeCompare(b.name)).filter(f=>!q||f.name.toLowerCase().includes(q)||f.addr.toLowerCase().includes(q));
+  document.getElementById('facTabCount').textContent=`${all.length} facilities`;
+  const start=facPage*PAGE, slice=all.slice(start,start+PAGE);
+  const tbody=document.getElementById('facTbody');
+  tbody.innerHTML=slice.map((f,i)=>`<tr>
+    <td style="color:var(--muted2);font-size:12px">${start+i+1}</td>
+    <td>
+      ${f.custom?`<input class="dt-editable" value="${esc(f.name)}" onchange="updFacName('${esc(f.name)}',this.value)">`:`<span style="font-weight:600">${esc(f.name)}</span>`}
+      ${f.custom?'<span class="tag tag-new" style="margin-left:6px">Custom</span>':''}
+    </td>
+    <td>
+      ${f.custom?`<input class="dt-editable" value="${esc(f.addr)}" onchange="updFacAddr('${esc(f.name)}',this.value)" style="width:100%">`:`<span style="font-size:12px;color:var(--muted)">${esc(f.addr)}</span>`}
+    </td>
+    <td style="display:flex;gap:5px;padding:6px 12px;">
+      ${f.custom?`<button class="btn btn-del btn-sm" onclick="delFac('${esc(f.name)}')">✕</button>`:'<span style="font-size:11px;color:var(--muted2)">Built-in</span>'}
+    </td>
+  </tr>`).join('');
+  renderPager('facPager', facPage, all.length, ()=>{facPage++;renderFacTab();}, ()=>{facPage--;renderFacTab();}, n=>{facPage=n;renderFacTab();});
+}
+function addFacility(){
+  const name=prompt('Facility name:'); if(!name?.trim()) return;
+  const addr=prompt('Full address:'); if(!addr?.trim()) return;
+  customFacs[name.trim()]=addr.trim(); saveFacs(); facPage=0; renderFacTab(); toast('Facility added','ok');
+}
+function updFacName(oldName, newName){
+  if(!newName.trim()||newName===oldName)return;
+  const addr=customFacs[oldName]; delete customFacs[oldName]; customFacs[newName.trim()]=addr||'';
+  saveFacs(); renderFacTab();
+}
+function updFacAddr(name, newAddr){ customFacs[name]=newAddr; saveFacs(); }
+function delFac(name){
+  showMo('Remove Facility',`Remove "${name}" from custom facilities?`,()=>{
+    delete customFacs[name]; saveFacs(); renderFacTab(); toast('Facility removed','warn');
+  });
+}
+function exportFacCSV(){
+  const rows=[['Facility Name','Address','Source']];
+  SEED.facNames.forEach(n=>rows.push([n,SEED.facAddr[n]||'','Built-in']));
+  Object.entries(customFacs).forEach(([n,a])=>rows.push([n,a,'Custom']));
+  dlCSV(rows,'eventus_facilities_'+ds()+'.csv'); toast('Facilities exported','ok');
+}
+
+// ══════════════════════════════════════════════════════
+//  PAGER
+// ══════════════════════════════════════════════════════
+function renderPager(id, curPage, total, onNext, onPrev, onGo){
+  const el=document.getElementById(id); if(!el) return;
+  const totalPages=Math.ceil(total/PAGE);
+  if(totalPages<=1){el.innerHTML='';return;}
+  let btns=`<button class="pg-btn" onclick="(${onPrev})()" ${curPage===0?'disabled':''}>‹ Prev</button>`;
+  for(let i=0;i<totalPages;i++){
+    if(i===0||i===totalPages-1||Math.abs(i-curPage)<=1)
+      btns+=`<button class="pg-btn ${i===curPage?'active':''}" onclick="(${onGo})(${i})">${i+1}</button>`;
+    else if(Math.abs(i-curPage)===2) btns+=`<span class="dt-pager" style="padding:0 4px;color:var(--muted)">…</span>`;
+  }
+  btns+=`<button class="pg-btn" onclick="(${onNext})()" ${curPage>=totalPages-1?'disabled':''}>Next ›</button>`;
+  btns+=`<span style="font-size:12px;color:var(--muted)">${total} total</span>`;
+  el.innerHTML=btns;
+}
+
+// ══════════════════════════════════════════════════════
+//  IMPORT — helpers
+// ══════════════════════════════════════════════════════
+let empImpRows=[], empImpHdrs=[];
+let facImpRows=[], facImpHdrs=[];
+
+function parseCsvText(text){
+  return text.split(/\r?\n/).filter(l=>l.trim()).map(line=>{
+    const r=[]; let cur='',inQ=false;
+    for(const c of line){if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){r.push(cur.trim());cur='';}else cur+=c;}
+    r.push(cur.trim()); return r.map(v=>v.replace(/^"|"$/g,'').trim());
+  });
+}
+function colIdx(hdrs,...kws){
+  const h=hdrs.map(x=>(x||'').toLowerCase().trim());
+  for(const kw of kws){const i=h.findIndex(x=>x.includes(kw));if(i>=0)return i;}
+  return -1;
+}
+function isHdrRow(row){ const kws=['name','address','employee','facility','city','state','zip']; return row.filter(c=>kws.some(k=>(c||'').toLowerCase().includes(k))).length>=2; }
+
+function dzOver(e,id){e.preventDefault();document.getElementById(id)?.classList.add('drag');}
+function dzOut(id){document.getElementById(id)?.classList.remove('drag');}
+function dzDrop(e,type){
+  e.preventDefault(); dzOut(type==='emp'?'empDropZone':'facDropZone');
+  const file=e.dataTransfer.files[0]; if(!file)return;
+  if(type==='emp') processEmpFile(file); else processFacFile(file);
+}
+
+// ── EMPLOYEE IMPORT ──
+function loadEmpPreview(ev){const f=ev.target.files[0];if(f)processEmpFile(f);ev.target.value='';}
+function processEmpFile(file){
+  document.getElementById('empFileName').textContent=file.name;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='xlsx'||ext==='xls'){
+    // Use SheetJS if available, else ask for CSV
+    if(typeof XLSX!=='undefined'){
+      const reader=new FileReader();
+      reader.onload=e=>{const wb=XLSX.read(e.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const csv=XLSX.utils.sheet_to_csv(ws);processEmpCSV(csv);};
+      reader.readAsArrayBuffer(file);
+    } else {
+      // Dynamically load SheetJS then re-process
+      const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload=()=>processEmpFile(file); document.head.appendChild(s);
+    }
+  } else {
+    const reader=new FileReader();
+    reader.onload=e=>processEmpCSV(e.target.result);
+    reader.readAsText(file);
+  }
+}
+function processEmpCSV(text){
+  const rows=parseCsvText(text); if(!rows.length){toast('File empty','err');return;}
+  const hasHdr=isHdrRow(rows[0]); empImpHdrs=hasHdr?rows[0]:[]; empImpRows=hasHdr?rows.slice(1):rows;
+  empImpRows=empImpRows.filter(r=>r.some(v=>v.trim()));
+  renderEmpPreview(); document.getElementById('empImportPreview').style.display='block';
+}
+
+// Always build address from individual parts (Address + City + State + Zip).
+// The Eventus FULLADDRESS column is unreliable — ~106 employees have the city
+// missing from it (e.g. "790 Douglas Ave, OH, 45050,US" instead of
+// "790 Douglas Ave, Monroe, OH, 45050"). Building from parts is always more accurate.
+function buildAddrFromParts(row, hdrs){
+  const a=colIdx(hdrs,'address','addr','street');
+  const c=colIdx(hdrs,'city');
+  const s=colIdx(hdrs,'state','province');
+  const z=colIdx(hdrs,'zip','postal');
+  const f=colIdx(hdrs,'fulladdress','full address');
+  // Prefer parts when an address field exists
+  if(a>=0 && (row[a]||'').trim()){
+    const parts=[
+      (row[a]||'').trim(),
+      c>=0?(row[c]||'').trim():'',
+      s>=0?(row[s]||'').trim():'',
+      z>=0?String(row[z]||'').trim():''
+    ].filter(p=>p);
+    return parts.join(', ');
+  }
+  // Fall back to FULLADDRESS only if no individual address col
+  if(f>=0&&(row[f]||'').trim()) return row[f].trim();
+  return '';
+}
+
+function renderEmpPreview(){
+  const ni=colIdx(empImpHdrs,'employee name','name','full name','employee');
+  const useNi=ni>=0?ni:0;
+  const dupMode=document.querySelector('input[name="empDup"]:checked')?.value||'skip';
+  let newC=0,updC=0,skipC=0;
+  document.getElementById('empPrevHead').innerHTML=`<tr><th>Status</th><th>Employee Name</th><th>Home Address</th></tr>`;
+  document.getElementById('empPrevBody').innerHTML=empImpRows.filter(r=>(r[useNi]||'').trim()).map(row=>{
+    const name=(row[useNi]||'').trim(); if(!name)return'';
+    const addr=buildAddrFromParts(row,empImpHdrs);
+    const isDup=employees.some(e=>e.name.trim().toLowerCase()===name.toLowerCase());
+    let stat,tc2,rc;
+    if(isDup&&dupMode==='skip'){stat='Skip';tc2='tag-skip';rc='imp-row-skip';skipC++;}
+    else if(isDup){stat='Update';tc2='tag-upd';rc='imp-row-dup';updC++;}
+    else{stat='New';tc2='tag-new';rc='imp-row-new';newC++;}
+    return `<tr class="${rc}"><td><span class="tag ${tc2}">${stat}</span></td><td><strong>${esc(name)}</strong></td><td>${esc(addr)}</td></tr>`;
+  }).join('');
+  document.getElementById('empPrevCount').textContent=`${empImpRows.filter(r=>(r[useNi]||'').trim()).length} rows — ${newC} new, ${updC} update, ${skipC} skip`;
+}
+document.addEventListener('change',e=>{if(e.target.name==='empDup')renderEmpPreview();});
+
+function commitEmpImport(){
+  const ni=colIdx(empImpHdrs,'employee name','name','full name','employee');
+  const useNi=ni>=0?ni:0;
+  const dupMode=document.querySelector('input[name="empDup"]:checked')?.value||'skip';
+  let added=0,updated=0,skipped=0;
+  empImpRows.filter(r=>(r[useNi]||'').trim()).forEach(row=>{
+    const name=(row[useNi]||'').trim(); if(!name) return;
+    const addr=buildAddrFromParts(row,empImpHdrs);
+    const ex=employees.find(e=>e.name.trim().toLowerCase()===name.toLowerCase());
+    if(ex){
+      if(dupMode==='skip'){skipped++;return;}
+      if(dupMode==='update'){if(addr)ex.address=addr;ex.name=name;updated++;return;}
+    }
+    employees.push({id:uid(),name,address:addr,open:false,trips:[defTrip()]});
+    added++;
+  });
+  save(); renderCalc();
+  const msg=`✓ ${added} added, ${updated} updated, ${skipped} skipped`;
+  document.getElementById('empImpMsg').textContent=msg; toast(msg,'ok');
+  clearEmpImport();
+}
+function clearEmpImport(){empImpRows=[];empImpHdrs=[];document.getElementById('empImportPreview').style.display='none';document.getElementById('empFileName').textContent='';}
+function downloadEmpTemplate(){
+  if(typeof XLSX!=='undefined') _doEmpTemplate();
+  else{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=_doEmpTemplate;document.head.appendChild(s);}
+}
+function _doEmpTemplate(){
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([
+    ['Employee Name','Address','State/Province','Zip/PostalCode','City','FULLADDRESS'],
+    ['John Smith','123 Main St','VA','23220','Richmond','123 Main St, Richmond, VA, 23220'],
+    ['Jane Doe','456 Oak Ave','OH','43215','Columbus','456 Oak Ave, Columbus, OH, 43215']
+  ]);
+  ws['!cols']=[{wch:22},{wch:28},{wch:14},{wch:14},{wch:16},{wch:40}];
+  XLSX.utils.book_append_sheet(wb,ws,'Employee');
+  XLSX.writeFile(wb,'Eventus_Employee_Import_Template.xlsx');
+  toast('Template downloaded','ok');
+}
+
+// ── FACILITY IMPORT ──
+function loadFacPreview(ev){const f=ev.target.files[0];if(f)processFacFile(f);ev.target.value='';}
+function processFacFile(file){
+  document.getElementById('facFileName').textContent=file.name;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='xlsx'||ext==='xls'){
+    if(typeof XLSX!=='undefined'){
+      const reader=new FileReader();
+      reader.onload=e=>{const wb=XLSX.read(e.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const csv=XLSX.utils.sheet_to_csv(ws);processFacCSV(csv);};
+      reader.readAsArrayBuffer(file);
+    } else {
+      const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload=()=>processFacFile(file);document.head.appendChild(s);
+    }
+  } else {
+    const reader=new FileReader();reader.onload=e=>processFacCSV(e.target.result);reader.readAsText(file);
+  }
+}
+function processFacCSV(text){
+  const rows=parseCsvText(text);if(!rows.length){toast('File empty','err');return;}
+  const hasHdr=isHdrRow(rows[0]);facImpHdrs=hasHdr?rows[0]:[]; facImpRows=hasHdr?rows.slice(1):rows;
+  facImpRows=facImpRows.filter(r=>r.some(v=>v.trim()));
+  renderFacPreview();document.getElementById('facImportPreview').style.display='block';
+}
+function renderFacPreview(){
+  const ni=colIdx(facImpHdrs,'facility name','name','company','facility');
+  const useNi=ni>=0?ni:0;
+  const allN=allFacNames().map(n=>n.toLowerCase());
+  let newC=0,updC=0;
+  document.getElementById('facPrevHead').innerHTML=`<tr><th>Status</th><th>Facility Name</th><th>Address</th></tr>`;
+  document.getElementById('facPrevBody').innerHTML=facImpRows.filter(r=>(r[useNi]||'').trim()).map(row=>{
+    const name=(row[useNi]||'').trim(); if(!name)return'';
+    const addr=buildAddrFromParts(row,facImpHdrs);
+    const isDup=allN.includes(name.toLowerCase());
+    if(isDup)updC++;else newC++;
+    const tc2=isDup?'tag-upd':'tag-new'; const rc=isDup?'imp-row-dup':'imp-row-new';
+    return `<tr class="${rc}"><td><span class="tag ${tc2}">${isDup?'Update':'New'}</span></td><td><strong>${esc(name)}</strong></td><td>${esc(addr)}</td></tr>`;
+  }).join('');
+  document.getElementById('facPrevCount').textContent=`${facImpRows.filter(r=>(r[useNi]||'').trim()).length} facilities — ${newC} new, ${updC} update`;
+}
+function commitFacImport(){
+  const ni=colIdx(facImpHdrs,'facility name','name','company','facility');
+  const useNi=ni>=0?ni:0;
+  const mode=document.querySelector('input[name="facMode"]:checked')?.value||'merge';
+  if(mode==='replace') customFacs={};
+  let added=0,updated=0;
+  facImpRows.filter(r=>(r[useNi]||'').trim()).forEach(row=>{
+    const name=(row[useNi]||'').trim(); if(!name)return;
+    const addr=buildAddrFromParts(row,facImpHdrs);
+    const isNew=!customFacs[name]&&!SEED.facAddr[name];
+    customFacs[name]=addr; if(isNew)added++;else updated++;
+  });
+  saveFacs(); facPage=0; renderFacTab();
+  const msg=`✓ ${added} added, ${updated} updated`;
+  document.getElementById('facImpMsg').textContent=msg; toast(msg,'ok');
+  clearFacImport();
+}
+function clearFacImport(){facImpRows=[];facImpHdrs=[];document.getElementById('facImportPreview').style.display='none';document.getElementById('facFileName').textContent='';}
+function downloadFacTemplate(){
+  if(typeof XLSX!=='undefined') _doFacTemplate();
+  else{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=_doFacTemplate;document.head.appendChild(s);}
+}
+function _doFacTemplate(){
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([
+    ['Facility Name','Address','City','State/Province','Zip/PostalCode','FULLADDRESS'],
+    ['Sunrise ALF','1234 Care Blvd','Richmond','VA','23220','1234 Care Blvd, Richmond, VA, 23220'],
+    ['Oakwood SNF','5678 Health Ave','Columbus','OH','43215','5678 Health Ave, Columbus, OH, 43215']
+  ]);
+  ws['!cols']=[{wch:28},{wch:28},{wch:16},{wch:14},{wch:14},{wch:44}];
+  XLSX.utils.book_append_sheet(wb,ws,'Facilities');
+  XLSX.writeFile(wb,'Eventus_Facility_Import_Template.xlsx');
+  toast('Template downloaded','ok');
+}
+
+// ══════════════════════════════════════════════════════
+//  DISTANCE API
+// ══════════════════════════════════════════════════════
+async function geo(addr){
+  const r=await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${encodeURIComponent(apiKey)}&text=${encodeURIComponent(addr)}&size=1`);
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Geocode ${r.status}`);}
+  const d=await r.json(); if(!d.features?.length)throw new Error('Not found: '+addr.slice(0,45));
+  return d.features[0].geometry.coordinates;
+}
+async function dist(o,d){
+  const[c1,c2]=await Promise.all([geo(o),geo(d)]);
+  const r=await fetch('https://api.openrouteservice.org/v2/directions/driving-car',{
+    method:'POST',headers:{'Authorization':apiKey,'Content-Type':'application/json'},
+    body:JSON.stringify({coordinates:[c1,c2],units:'mi'})
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Directions ${r.status}`);}
+  const d2=await r.json(); return Math.round(d2.routes[0].summary.distance*0.000621371*10)/10;
+}
+async function getDist(o,d){
+  if(!apiKey){toast('No API key set','err');return null;}
+  try{return await dist(o,d);}catch(e){toast('❌ '+e.message,'err');return null;}
+}
+async function calcTrip(eId,tId){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  const t=e.trips.find(x=>x.id===tId);if(!t)return;
+  if(!e.address){toast('Enter employee home address first','err');return;}
+  const wps=[e.address,...t.stops.map(s=>s.addr||s.fac),e.address];
+  for(let i=0;i<wps.length;i++)if(!wps[i]){toast(`Stop ${i} missing address`,'err');return;}
+  const btn=document.getElementById(`cb_${eId}_${tId}`);
+  if(btn){btn.textContent='…';btn.disabled=true;btn.classList.add('loading');}
+  try{
+    const legs=[];
+    for(let i=0;i<wps.length-1;i++){
+      toast(`Leg ${i+1}/${wps.length-1}…`,'warn');
+      const d=await getDist(wps[i],wps[i+1]);if(d===null)return;
+      legs.push(d.toFixed(1));await slp(300);
+      const el=document.getElementById(`lg_${tId}_${i}`);if(el)el.value=d.toFixed(1);
+    }
+    t.legs=legs;recalc(t);save();rerenderEmp(eId);updateSummary();toast('✓ Distances calculated!','ok');
+  }finally{if(btn){btn.textContent='↯ Calculate Distances';btn.disabled=false;btn.classList.remove('loading');}}
+}
+async function calcAll(eId){
+  const e=employees.find(x=>x.id===eId);if(!e)return;
+  if(!e.address){toast('Enter employee home address first','err');return;}
+  toast('Calculating all routes…','warn');
+  for(const t of e.trips){if(t.stops.some(s=>s.fac||s.addr))await calcTrip(eId,t.id);await slp(500);}
+  toast('✓ All routes calculated!','ok');
+}
+function slp(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ══════════════════════════════════════════════════════
+//  SNAPSHOTS / HISTORY
+// ══════════════════════════════════════════════════════
+function snapEmp(id){
+  const e=employees.find(x=>x.id===id);if(!e)return;
+  const{tc,tm}=empTot(e);
+  const snap={id:uid(),label:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),date:new Date().toISOString(),tc:tc.toFixed(2),tm:tm.toFixed(0),data:JSON.parse(JSON.stringify(e))};
+  if(!snapshots[id])snapshots[id]=[];
+  snapshots[id].unshift(snap);
+  localStorage.setItem('fc_snaps',JSON.stringify(snapshots));
+  toast(`✓ Snapshot saved for ${e.name||'employee'}`,'ok');
+}
+function saveAllSnaps(){
+  const lbl=document.getElementById('snapLabel')?.value?.trim()||new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  employees.forEach(e=>{
+    const{tc,tm}=empTot(e);
+    const snap={id:uid(),label:lbl,date:new Date().toISOString(),tc:tc.toFixed(2),tm:tm.toFixed(0),data:JSON.parse(JSON.stringify(e))};
+    if(!snapshots[e.id])snapshots[e.id]=[];
+    snapshots[e.id].unshift(snap);
+  });
+  localStorage.setItem('fc_snaps',JSON.stringify(snapshots));
+  const li=document.getElementById('snapLabel');if(li)li.value='';
+  renderHist(); toast(`✓ Snapshot saved for all ${employees.length} employees`,'ok');
+}
+function restoreSnap(eId,sId){
+  const snap=snapshots[eId]?.find(s=>s.id===sId);if(!snap)return;
+  showMo('Restore Snapshot',`Restore "${snap.label}" for ${snap.data?.name}? Current data will be replaced.`,()=>{
+    const idx=employees.findIndex(e=>e.id===eId);
+    const res={...JSON.parse(JSON.stringify(snap.data)),open:true};
+    if(idx>=0)employees[idx]=res;else employees.push(res);
+    save();renderCalc();T('calc');toast(`✓ Restored "${snap.label}"`,'ok');
+  });
+}
+function delSnap(eId,sId){
+  showMo('Delete Snapshot','Delete this snapshot? Cannot be undone.',()=>{
+    if(snapshots[eId])snapshots[eId]=snapshots[eId].filter(s=>s.id!==sId);
+    localStorage.setItem('fc_snaps',JSON.stringify(snapshots));
+    renderHist();toast('Snapshot deleted','warn');
+  });
+}
+function renderHist(){
+  const list=document.getElementById('histList');
+  const ids=Object.keys(snapshots).filter(id=>snapshots[id]?.length);
+  document.getElementById('histBadge').textContent=ids.length;
+  if(!ids.length){list.innerHTML='<div style="text-align:center;padding:48px;color:var(--muted)">📭 No snapshots yet. Use 💾 Save Snapshots to preserve history.</div>';return;}
+  list.innerHTML=ids.map(eId=>{
+    const snaps=snapshots[eId],latest=snaps[0];
+    const name=latest?.data?.name||'Unknown Employee';
+    const isOpen=document.getElementById('sh_'+eId)?.classList.contains('open');
+    return `<div class="snap-card">
+      <div class="snap-hdr" onclick="toggleHistSnap('${eId}')">
+        <div class="emp-av" style="width:34px;height:34px;font-size:11px">${ini(name)}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700;font-family:var(--disp);color:var(--navy)">${esc(name)}</div>
+          <div style="font-size:11px;color:var(--muted)">${snaps.length} snapshot${snaps.length!==1?'s':''} · Latest: ${latest.label}</div></div>
+        <div style="text-align:right"><div style="font-size:15px;font-weight:700;color:var(--teal);font-family:var(--disp)">$${latest.tc}/mo</div>
+          <div style="font-size:10px;color:var(--muted)">${latest.tm} mi/mo</div></div>
+        <span class="chev ${isOpen?'open':''}" style="margin-left:10px">▼</span>
+      </div>
+      <div class="snap-body ${isOpen?'open':''}" id="sh_${eId}">
+        <table class="snap-table"><thead><tr><th>Date / Label</th><th>Routes</th><th>Qual Mi/Mo</th><th>$/Month</th><th style="width:140px">Actions</th></tr></thead>
+        <tbody>${snaps.map(s=>{
+          const d=new Date(s.date);
+          return `<tr><td><strong>${esc(s.label)}</strong><br><small style="color:var(--muted)">${d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} ${d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</small></td>
+            <td>${s.data?.trips?.length||0}</td>
+            <td style="font-family:var(--mono);font-weight:700;color:var(--pur)">${s.tm}</td>
+            <td style="font-family:var(--mono);font-weight:700;color:var(--teal)">$${s.tc}</td>
+            <td style="display:flex;gap:5px;padding:6px 12px">
+              <button class="btn btn-out btn-sm" onclick="restoreSnap('${eId}','${s.id}')">↩ Restore</button>
+              <button class="btn btn-del btn-sm" onclick="delSnap('${eId}','${s.id}')">✕</button>
+            </td></tr>`;
+        }).join('')}</tbody></table>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleHistSnap(eId){
+  const el=document.getElementById('sh_'+eId);if(!el)return;
+  el.classList.toggle('open');
+  const chev=el.previousElementSibling?.querySelector('.chev');if(chev)chev.classList.toggle('open',el.classList.contains('open'));
+}
+
+// ══════════════════════════════════════════════════════
+//  EXPORT / IMPORT JSON / CSV
+// ══════════════════════════════════════════════════════
+function exportCSV(){
+  const rows=[['Employee','Home Address','Stop1 Name','Stop1 Addr','Stop2 Name','Stop2 Addr','Stop3 Name','Stop3 Addr','Freq/Mo','$/Mile','Round Trip','Qual Mi','Total Mi/Mo','Total $/Mo']];
+  employees.forEach(e=>e.trips.forEach(t=>{
+    const sc=[];for(let i=0;i<3;i++){sc.push(t.stops[i]?.fac||'');sc.push(t.stops[i]?.addr||'');}
+    rows.push([e.name,e.address,...sc,t.freq,t.rate,t.roundTrip,t.qualifying,t.totalMiles,t.totalCost]);
+  }));
+  dlCSV(rows,'eventus_fuel_card_'+ds()+'.csv');toast('CSV exported','ok');
+}
+function dlCSV(rows,fn){
+  const csv=rows.map(r=>r.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  dlFile(csv,fn,'text/csv');
+}
+function exportJSON(){dlFile(JSON.stringify({employees,customFacs,snapshots,date:new Date().toISOString()},null,2),'eventus_fuel_backup_'+ds()+'.json','application/json');toast('Backup exported','ok');}
+function importJSON(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      showMo('Import Backup','Replace all current data with this backup?',()=>{
+        if(d.employees)employees=d.employees;
+        if(d.customFacs)customFacs=d.customFacs;
+        if(d.snapshots)snapshots=d.snapshots;
+        save();saveFacs();localStorage.setItem('fc_snaps',JSON.stringify(snapshots));
+        renderCalc();renderHist();toast('✓ Backup imported','ok');
+      });
+    }catch{toast('Invalid backup file','err');}
+  };
+  r.readAsText(f);ev.target.value='';
+}
+function confirmClearAll(){
+  showMo('Clear All Data','⚠️ Delete ALL employees, facilities, routes, and snapshots?',()=>{
+    employees=[];customFacs=[];snapshots={};
+    localStorage.removeItem('fc_emps');localStorage.removeItem('fc_facs');localStorage.removeItem('fc_snaps');
+    employees=[{id:uid(),name:'',address:'',open:true,trips:[defTrip()]}];
+    save();renderCalc();renderHist();toast('All data cleared','warn');
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  API KEY
+// ══════════════════════════════════════════════════════
+function saveApiKey(){apiKey=document.getElementById('apiKey').value.trim();localStorage.setItem('fc_apikey',apiKey);updateApiStatus();}
+function updateApiStatus(){const el=document.getElementById('apiStatus');if(!el)return;if(apiKey?.length>8){el.textContent='✓ Key loaded';el.className='api-ok';}else{el.textContent='⚠ No key';el.className='api-no';}}
+
+// ══════════════════════════════════════════════════════
+//  MODAL / TOAST / UTILS
+// ══════════════════════════════════════════════════════
+let _moCb=null;
+function showMo(title,msg,cb){document.getElementById('moTitle').textContent=title;document.getElementById('moMsg').textContent=msg;_moCb=cb;document.getElementById('modal').classList.add('show');document.getElementById('moOk').onclick=()=>{closeMo();if(_moCb)_moCb();};}
+function closeMo(){document.getElementById('modal').classList.remove('show');}
+function toast(msg,type='ok'){const el=document.getElementById('toast');el.textContent=msg;el.className='toast show '+type;clearTimeout(el._t);el._t=setTimeout(()=>el.className='toast',4500);}
+function dlFile(c,fn,mime){const b=new Blob([c],{type:mime}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=fn;a.click();URL.revokeObjectURL(u);}
+function ds(){return new Date().toISOString().slice(0,10);}
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
