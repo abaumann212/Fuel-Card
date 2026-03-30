@@ -701,7 +701,20 @@ function attachEmpAC(emp){
 }
 function rerenderEmp(id){
   const emp=employees.find(e=>e.id===id);if(!emp)return;
-  const c=document.getElementById('ec_'+id);if(c){c.innerHTML=empHTML(emp);attachEmpAC(emp);}
+  const c=document.getElementById('ec_'+id);if(!c)return;
+  // Preserve open state before rerender
+  const wasOpen=emp.open;
+  emp.open=true; // force open so body renders in HTML
+  c.innerHTML=empHTML(emp);
+  emp.open=wasOpen;
+  // Now apply correct visual state
+  const hdr=c.querySelector('.emp-hdr');
+  const body=c.querySelector('.emp-body');
+  const chev=c.querySelector('.chev');
+  if(hdr) hdr.classList.toggle('open',wasOpen);
+  if(body) body.classList.toggle('open',wasOpen);
+  if(chev) chev.classList.toggle('open',wasOpen);
+  attachEmpAC(emp);
   updateSummary();
 }
 function toggleEmp(id){
