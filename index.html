@@ -1118,7 +1118,6 @@ function cleanAddr(addr){
 }
 async function geo(addr){
   const clean=cleanAddr(addr);
-  // Use Nominatim (OpenStreetMap) for geocoding - free, no key, works from any https page
   const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(clean)}&format=json&limit=1&countrycodes=us`;
   const r=await fetch(url,{headers:{'Accept-Language':'en-US','User-Agent':'EventusFuelCard/1.0'}});
   if(!r.ok) throw new Error(`Geocode error ${r.status}`);
@@ -1128,15 +1127,16 @@ async function geo(addr){
 }
 async function dist(o,d){
   const[c1,c2]=await Promise.all([geo(o),geo(d)]);
-  const r=await fetch('https://api.openrouteservice.org/v2/directions/driving-car',{
-    method:'POST',headers:{'Authorization':apiKey,'Content-Type':'application/json'},
-    body:JSON.stringify({coordinates:[c1,c2],units:'mi'})
-  });
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Directions error ${r.status}`);}
-  const d2=await r.json(); return Math.round(d2.routes[0].summary.distance*0.000621371*10)/10;
+  // OSRM - free, open source, no API key, no CORS issues
+  const url=`https://router.project-osrm.org/route/v1/driving/${c1[0]},${c1[1]};${c2[0]},${c2[1]}?overview=false`;
+  const r=await fetch(url);
+  if(!r.ok) throw new Error(`Routing error ${r.status}`);
+  const d2=await r.json();
+  if(d2.code!=='Ok') throw new Error(`Routing failed: ${d2.code}`);
+  // OSRM returns meters, convert to miles
+  return Math.round(d2.routes[0].distance*0.000621371*10)/10;
 }
 async function getDist(o,d){
-  if(!apiKey){toast('No API key set','err');return null;}
   try{return await dist(o,d);}catch(e){toast('❌ '+e.message,'err');console.error('getDist failed:',o,'->',d,e);return null;}
 }
 async function calcTrip(eId,tId){
