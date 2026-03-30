@@ -1138,16 +1138,18 @@ async function geo(addr){
   if(!d.length) throw new Error(`Address not found: "${clean.slice(0,50)}"`);
   return [parseFloat(d[0].lon), parseFloat(d[0].lat)];
 }
+function haversineMiles(c1,c2){
+  // Straight-line distance in miles between two [lon,lat] points
+  const R=3958.8, toRad=x=>x*Math.PI/180;
+  const dLat=toRad(c2[1]-c1[1]), dLon=toRad(c2[0]-c1[0]);
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(c1[1]))*Math.cos(toRad(c2[1]))*Math.sin(dLon/2)**2;
+  const straight=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  // Multiply by 1.25 to approximate actual driving distance
+  return Math.round(straight*1.25*10)/10;
+}
 async function dist(o,d){
   const[c1,c2]=await Promise.all([geo(o),geo(d)]);
-  // OSRM - free, open source, no API key, no CORS issues
-  const url=`https://router.project-osrm.org/route/v1/driving/${c1[0]},${c1[1]};${c2[0]},${c2[1]}?overview=false`;
-  const r=await fetch(url);
-  if(!r.ok) throw new Error(`Routing error ${r.status}`);
-  const d2=await r.json();
-  if(d2.code!=='Ok') throw new Error(`Routing failed: ${d2.code}`);
-  // OSRM returns meters, convert to miles
-  return Math.round(d2.routes[0].distance*0.000621371*10)/10;
+  return haversineMiles(c1,c2);
 }
 async function getDist(o,d){
   try{return await dist(o,d);}catch(e){toast('❌ '+e.message,'err');console.error('getDist failed:',o,'->',d,e);return null;}
