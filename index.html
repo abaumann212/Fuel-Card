@@ -1113,10 +1113,17 @@ function _doFacTemplate(){
 // ══════════════════════════════════════════════════════
 //  DISTANCE API
 // ══════════════════════════════════════════════════════
+function cleanAddr(addr){
+  // Strip trailing ",US" or ", US" and clean up extra commas/spaces
+  // ORS geocoder works better without the country suffix
+  return addr.replace(/,?\s*US\s*$/i,'').replace(/,\s*,/g,',').trim();
+}
 async function geo(addr){
-  const r=await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${encodeURIComponent(apiKey)}&text=${encodeURIComponent(addr)}&size=1`);
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Geocode ${r.status}`);}
-  const d=await r.json(); if(!d.features?.length)throw new Error('Not found: '+addr.slice(0,45));
+  const clean=cleanAddr(addr);
+  const r=await fetch(`https://api.openrouteservice.org/geocode/search?api_key=${encodeURIComponent(apiKey)}&text=${encodeURIComponent(clean)}&size=1`);
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Geocode error ${r.status}`);}
+  const d=await r.json();
+  if(!d.features?.length)throw new Error(`Address not found: "${clean.slice(0,50)}"`);
   return d.features[0].geometry.coordinates;
 }
 async function dist(o,d){
@@ -1125,12 +1132,12 @@ async function dist(o,d){
     method:'POST',headers:{'Authorization':apiKey,'Content-Type':'application/json'},
     body:JSON.stringify({coordinates:[c1,c2],units:'mi'})
   });
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Directions ${r.status}`);}
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`Directions error ${r.status}`);}
   const d2=await r.json(); return Math.round(d2.routes[0].summary.distance*0.000621371*10)/10;
 }
 async function getDist(o,d){
   if(!apiKey){toast('No API key set','err');return null;}
-  try{return await dist(o,d);}catch(e){toast('❌ '+e.message,'err');return null;}
+  try{return await dist(o,d);}catch(e){toast('❌ '+e.message,'err');console.error('getDist failed:',o,'->',d,e);return null;}
 }
 async function calcTrip(eId,tId){
   const e=employees.find(x=>x.id===eId);if(!e)return;
@@ -1144,12 +1151,13 @@ async function calcTrip(eId,tId){
     const legs=[];
     for(let i=0;i<wps.length-1;i++){
       toast(`Leg ${i+1}/${wps.length-1}…`,'warn');
-      const d=await getDist(wps[i],wps[i+1]);if(d===null)return;
+      const d=await getDist(wps[i],wps[i+1]);
+      if(d===null) throw new Error('Distance lookup failed — check addresses above.');
       legs.push(d.toFixed(1));await slp(300);
-      const el=document.getElementById(`lg_${tId}_${i}`);if(el)el.value=d.toFixed(1);
     }
     t.legs=legs;recalc(t);save();rerenderEmp(eId);updateSummary();toast('✓ Distances calculated!','ok');
-  }finally{if(btn){btn.textContent='↯ Calculate Distances';btn.disabled=false;btn.classList.remove('loading');}}
+  }catch(e){toast('❌ '+e.message,'err');}
+  finally{if(btn){btn.textContent='↯ Calculate Distances';btn.disabled=false;btn.classList.remove('loading');}}
 }
 async function calcAll(eId){
   const e=employees.find(x=>x.id===eId);if(!e)return;
