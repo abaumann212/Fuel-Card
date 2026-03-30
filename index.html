@@ -1131,12 +1131,16 @@ function cleanAddr(addr){
 }
 async function geo(addr){
   const clean=cleanAddr(addr);
-  const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(clean)}&format=json&limit=1&countrycodes=us`;
+  // Try structured geocoding first for better accuracy with US addresses
+  const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(clean)}&format=json&limit=3&countrycodes=us&addressdetails=1`;
   const r=await fetch(url,{headers:{'Accept-Language':'en-US','User-Agent':'EventusFuelCard/1.0'}});
   if(!r.ok) throw new Error(`Geocode error ${r.status}`);
   const d=await r.json();
   if(!d.length) throw new Error(`Address not found: "${clean.slice(0,50)}"`);
-  return [parseFloat(d[0].lon), parseFloat(d[0].lat)];
+  // Prefer results with house number (most specific match)
+  const best=d.find(x=>x.address?.house_number)||d[0];
+  console.log(`Geocoded "${clean}" -> ${best.display_name} [${best.lat},${best.lon}]`);
+  return [parseFloat(best.lon), parseFloat(best.lat)];
 }
 function haversineMiles(c1,c2){
   // Straight-line distance in miles between two [lon,lat] points
@@ -1144,8 +1148,8 @@ function haversineMiles(c1,c2){
   const dLat=toRad(c2[1]-c1[1]), dLon=toRad(c2[0]-c1[0]);
   const a=Math.sin(dLat/2)**2+Math.cos(toRad(c1[1]))*Math.cos(toRad(c2[1]))*Math.sin(dLon/2)**2;
   const straight=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-  // Multiply by 1.25 to approximate actual driving distance
-  return Math.round(straight*1.25*10)/10;
+  // Multiply by 1.35 to approximate actual driving distance from straight-line
+  return Math.round(straight*1.35*10)/10;
 }
 async function dist(o,d){
   const[c1,c2]=await Promise.all([geo(o),geo(d)]);
